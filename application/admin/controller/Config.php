@@ -7,6 +7,11 @@ use think\Db;
 
 class Config extends Base
 {
+    private function writeRouteFile($filePath, $content)
+    {
+        return @file_put_contents($filePath, $content) !== false;
+    }
+
     /**
      * 获取配置参数
      */
@@ -152,15 +157,20 @@ class Config extends Base
             ];
         }
         if (isset($config['shorturl'])) {
+            $routeWriteOk = true;
             if ($config['shorturl'] == 1) {
                 $mobile   = "<?php use think\\Route;Route::rule('mg/:mpid','mobile/Index/goodsdetail');Route::rule('mg','mobile/Index/goodsdetail');Route::rule('mc/:lmid','mobile/index/categorybyid');";
                 $jingdian = "<?php use think\\Route;Route::rule('pg/:mpid','jingdian/Index/goodsdetail');Route::rule('pg','jingdian/Index/goodsdetail');Route::rule('pc/:lmid','jingdian/index/goodscategory');Route::rule('createOrder','jingdian/Mqapi/createOrder');Route::rule('getOrder','jingdian/Mqapi/getOrder');Route::rule('checkOrder','jingdian/Mqapi/checkOrder');Route::rule('closeOrder','jingdian/Mqapi/closeOrder');Route::rule('getState','jingdian/Mqapi/getState');Route::rule('appHeart','jingdian/Mqapi/appHeart');Route::rule('appPush','jingdian/Mqapi/appPush');";
-                file_put_contents(ROOT_PATH . 'application/jingdian.php', $jingdian);
-                file_put_contents(ROOT_PATH . 'application/mobile.php', $mobile);
+                $routeWriteOk = $this->writeRouteFile(ROOT_PATH . 'application/jingdian.php', $jingdian)
+                    && $this->writeRouteFile(ROOT_PATH . 'application/mobile.php', $mobile);
             } else {
                 $jingdian = "<?php use think\\Route;Route::rule('createOrder','jingdian/Mqapi/createOrder');Route::rule('getOrder','jingdian/Mqapi/getOrder');Route::rule('checkOrder','jingdian/Mqapi/checkOrder');Route::rule('closeOrder','jingdian/Mqapi/closeOrder');Route::rule('getState','jingdian/Mqapi/getState');Route::rule('appHeart','jingdian/Mqapi/appHeart');Route::rule('appPush','jingdian/Mqapi/appPush');";
-                file_put_contents(ROOT_PATH . 'application/jingdian.php', $jingdian);
-                file_put_contents(ROOT_PATH . 'application/mobile.php', '');
+                $routeWriteOk = $this->writeRouteFile(ROOT_PATH . 'application/jingdian.php', $jingdian)
+                    && $this->writeRouteFile(ROOT_PATH . 'application/mobile.php', '');
+            }
+
+            if (!$routeWriteOk) {
+                $this->error('保存失败：路由文件不可写，请检查 application 目录权限');
             }
         }
 

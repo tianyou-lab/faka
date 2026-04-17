@@ -35,6 +35,94 @@ function is_really_writable($file)
     return TRUE;
 }
 
+// Check whether a target file can be written.
+// If the file does not exist yet, test whether its parent directory is writable.
+function can_write_target_file($file)
+{
+    if (is_file($file))
+    {
+        return is_really_writable($file);
+    }
+
+    $dir = dirname($file);
+    if (!is_dir($dir))
+    {
+        return FALSE;
+    }
+
+    if (DIRECTORY_SEPARATOR == '/' AND @ ini_get("safe_mode") == FALSE)
+    {
+        return is_writable($dir);
+    }
+
+    $tmpFile = rtrim($dir, '/\\') . DS . uniqid('wtest_', TRUE) . '.tmp';
+    if (($fp = @fopen($tmpFile, "ab")) === FALSE)
+    {
+        return FALSE;
+    }
+
+    fclose($fp);
+    @unlink($tmpFile);
+    return TRUE;
+}
+
+// MySQL 5.7/8.0 do not allow explicit DEFAULT values on TEXT/BLOB/JSON/GEOMETRY columns.
+// Normalize legacy install SQL before executing it.
+function normalize_install_sql($sql)
+{
+    $pattern = '/(`[^`]+`\s+(?:tinytext|text|mediumtext|longtext|tinyblob|blob|mediumblob|longblob|json|geometry)\b[^,\r\n]*?)\s+DEFAULT\s+(\'(?:[^\']|\'\')*\'|"(?:[^"]|"")*"|[^\s,]+)(\s*(?:COMMENT\s+\'[^\']*\')?\s*,)/i';
+    return preg_replace($pattern, '$1$3', $sql);
+}
+
+function detect_request_host()
+{
+    $host = '';
+    if (!empty($_SERVER['HTTP_HOST']))
+    {
+        $host = trim((string)$_SERVER['HTTP_HOST']);
+    }
+    else if (!empty($_SERVER['SERVER_NAME']))
+    {
+        $host = trim((string)$_SERVER['SERVER_NAME']);
+    }
+
+    if ($host === '')
+    {
+        return 'localhost';
+    }
+
+    // Remove :port for IPv4/domain hosts.
+    if ($host[0] !== '[')
+    {
+        $host = preg_replace('/:\d+$/', '', $host);
+    }
+
+    $host = trim($host);
+    return $host !== '' ? $host : 'localhost';
+}
+
+function get_admin_entry_path($default = 'wzhr')
+{
+    $routeFile = ROOT_PATH . 'application' . DS . 'admin.php';
+    if (!is_file($routeFile))
+    {
+        return $default;
+    }
+
+    $content = @file_get_contents($routeFile);
+    if ($content === false || $content === '')
+    {
+        return $default;
+    }
+
+    if (preg_match("/Route::rule\\(\\s*'([^']+)'\\s*,\\s*'admin\\/login\\/index'\\s*\\)/i", $content, $matches))
+    {
+        return $matches[1];
+    }
+
+    return $default;
+}
+
 $sitename = "分销版系统";
 
 //错误信息
@@ -56,11 +144,23 @@ else if (!extension_loaded("PDO"))
 {
     $errInfo = "当前未开启PDO，无法进行安装";
 }
-else if (!is_really_writable($dbConfigFile))
+else if (!can_write_target_file($dbConfigFile))
 {
     $errInfo = "当前权限不足，无法写入配置文件/conn.php";
 
 }
+else if (!can_write_target_file($lockFile))
+{
+    $errInfo = "当前权限不足，无法写入安装锁文件/data/install.lock";
+}
+
+$postAction = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '/index.php';
+if (!$postAction || $postAction === '/')
+{
+    $postAction = '/index.php';
+}
+$adminPath = get_admin_entry_path();
+$adminEntranceUrl = '/' . ltrim($adminPath, '/');
 // 当前是POST请求
 if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -116,6 +216,7 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
         {
             throw new Exception("无法读取/data/fxfk.sql文件，请检查是否有读权限");
         }
+        $sql = normalize_install_sql($sql);
         $pdo = new PDO("mysql:host={$mysqlHostname};port={$mysqlHostport}", $mysqlUsername, $mysqlPassword, array(
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
@@ -125,19 +226,20 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
 
         $pdo->query("USE `{$mysqlDatabase}`");
 
+
         $pdo->exec($sql);
 
-        $conphp = "<?php
-					error_reporting(0);
-					ini_set('display_errors','off');
-					define('DECRYPT_KEY', '".md5(time() . mt_rand(0,1000))."');
-					header('Content-Type: text/html;charset=utf-8');
-					\$DB_HOSTNAME='".$mysqlHostname."';// 服务器地址
-					\$DB_hostport='".$mysqlHostport."';// 数据库端口  					
-					\$DB_DATABASE='".$mysqlDatabase."';// 数据库名
-					\$DB_USERNAME='".$mysqlUsername."';// 用户名  
-					\$DB_PASSWORD='".$mysqlPassword."';// 密码
-					?>";
+                        $conphp = "<?php\n";
+        $conphp .= "error_reporting(0);\n";
+        $conphp .= "ini_set('display_errors','off');\n";
+        $conphp .= "define('DECRYPT_KEY', " . var_export(md5(time() . mt_rand(0,1000)), true) . ");\n";
+        $conphp .= "header('Content-Type: text/html;charset=utf-8');\n";
+        $conphp .= '$DB_HOSTNAME=' . var_export($mysqlHostname, true) . ";\n";
+        $conphp .= '$DB_hostport=' . var_export((string)$mysqlHostport, true) . ";\n";
+        $conphp .= '$DB_DATABASE=' . var_export($mysqlDatabase, true) . ";\n";
+        $conphp .= '$DB_USERNAME=' . var_export($mysqlUsername, true) . ";\n";
+        $conphp .= '$DB_PASSWORD=' . var_export($mysqlPassword, true) . ";\n";
+        $conphp .= "?>";
         //检测能否成功写入数据库配置
         $result = @file_put_contents($dbConfigFile, $conphp);
         if (!$result)
@@ -155,12 +257,20 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
         $newPassword = md5(md5($adminPassword).'JUD6FCtZsqrmVXc2apev4TRn3O8gAhxbSlH9wfPN'); 
 		$token = md5(mt_rand());		
         $ctime = date('Y-m-d',time());
-        $siteurl = $_SERVER['SERVER_NAME'];
-        $pdo->query("UPDATE think_admin SET username = '{$adminUsername}' ,password = '{$newPassword}' ,token = '{$token}' WHERE id = 1");      
-        $pdo->query("UPDATE think_config SET value = '{$siteurl}' WHERE id = 35");   
-        $pdo->query("UPDATE think_config SET value = '{$siteurl}' WHERE id = 97");
-        $pdo->query("UPDATE think_config SET value = '//cdn.staticfile.org/' WHERE name = 'cdnpublic'");
-		$pdo->query("UPDATE think_config SET value = '{$token}' WHERE name = 'token'");
+        $siteurl = detect_request_host();
+
+        $adminStmt = $pdo->prepare("UPDATE think_admin SET username = :username, password = :password, token = :token WHERE id = 1");
+        $adminStmt->execute([
+            'username' => $adminUsername,
+            'password' => $newPassword,
+            'token'    => $token,
+        ]);
+
+        $configStmt = $pdo->prepare("UPDATE think_config SET value = :value WHERE name = :name");
+        $configStmt->execute(['name' => 'web_host', 'value' => $siteurl]);
+        $configStmt->execute(['name' => 'main_webhost', 'value' => $siteurl]);
+        $configStmt->execute(['name' => 'cdnpublic', 'value' => '//cdn.staticfile.org/']);
+        $configStmt->execute(['name' => 'token', 'value' => $token]);
         echo "success";
     }
     catch (Exception $e)
@@ -309,7 +419,7 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
 本程序为正规正版激活码、点卡、实物微商下单辅助系统。</br>
 所有法律责任由架设与运营本网站(程序)的人承担。</br>
 法网恢恢 疏而不漏。请自觉遵守法律法规。</div>
-        <form method="post">
+        <form method="post" action="<?php echo htmlspecialchars($postAction, ENT_QUOTES, 'UTF-8'); ?>">
             <?php if ($errInfo): ?>
                 <div class="error">
                     <?php echo $errInfo; ?>
@@ -375,12 +485,13 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
                         .text('安装中...')
                         .prop('disabled', true);
 
-                    $.post('', $(this).serialize())
+                    var actionUrl = $(this).attr('action') || window.location.pathname || '/index.php';
+                    $.post(actionUrl, $(this).serialize())
                         .done(function (ret) {
                             if (ret === 'success') {
                                 $('#error').hide();
-                                $("#success").text("安装成功！开始你的<?php echo $sitename; ?>之旅吧！").show();
-                                $('<a class="btn" href="/">访问首页</a> <a class="btn" href="/houtai" style="background:#18bc9c">访问后台</a>').insertAfter($button);
+                                $("#success").text("Install success! Start your <?php echo $sitename; ?> journey.").show();
+                                $('<a class="btn" href="/">访问首页</a> <a class="btn" href="<?php echo htmlspecialchars($adminEntranceUrl, ENT_QUOTES, 'UTF-8'); ?>" style="background:#18bc9c">访问后台</a>').insertAfter($button);
                                 $button.remove();
                             } else {
                                 $('#error').show().text(ret);

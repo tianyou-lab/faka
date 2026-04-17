@@ -39,11 +39,19 @@ class Login extends Controller
      */
     public function doLogin()
     {
-        $referer = $_SERVER['HTTP_REFERER'];
-        $referer = str_ireplace("http://", "", $referer);
-        $referer = str_ireplace("https://", "", $referer);
-        if (urldecode($referer) != $_SERVER['HTTP_HOST'] . '/' . getadminpath() . '.html' && urldecode($referer) != $_SERVER['HTTP_HOST'] . '/' . getadminpath()) {
-            return json(['code' => 404, 'url' => '404.html', 'msg' => '404页面丢失']);
+        $referer = isset($_SERVER["HTTP_REFERER"]) ? (string)$_SERVER["HTTP_REFERER"] : "";
+        if ($referer !== "") {
+            $refererHost = (string)parse_url($referer, PHP_URL_HOST);
+            $refererPath = trim((string)parse_url($referer, PHP_URL_PATH), "/");
+            $currentHost = (string)parse_url("http://" . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : ""), PHP_URL_HOST);
+            $adminPath = trim(getadminpath(), "/");
+
+            $hostValid = ($refererHost === "" || $currentHost === "" || strcasecmp($refererHost, $currentHost) === 0);
+            $pathValid = ($refererPath === "" || preg_match("#(?:^|/)" . preg_quote($adminPath, "#") . "(?:\\.html)?$#", $refererPath));
+
+            if (!$hostValid || !$pathValid) {
+                return json(["code" => 404, "url" => "404.html", "msg" => "404页面丢失"]);
+            }
         }
 
         $username = input("param.username");

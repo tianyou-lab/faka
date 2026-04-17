@@ -44,8 +44,11 @@
 
 ## 后台地址
 
+默认后台入口由 `application/admin.php` 中的 `Route::rule('xxx','admin/login/index')` 决定。
+本仓库当前默认是：
+
 ```
-http://你的域名/houtai
+http://你的域名/wzhr
 ```
 
 ## 权限设置

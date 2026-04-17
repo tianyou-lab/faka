@@ -542,9 +542,23 @@ function getSubstr($str, $leftStr, $rightStr)
  */
 function getadminpath()
 {
-    $routetext = file_get_contents(APP_PATH . "admin.php");
+    $defaultPath = 'wzhr';
+    $routeFile = APP_PATH . "admin.php";
+    if (!is_file($routeFile)) {
+        return $defaultPath;
+    }
+
+    $routetext = @file_get_contents($routeFile);
+    if ($routetext === false || $routetext === '') {
+        return $defaultPath;
+    }
+
+    if (preg_match("/Route::rule\\(\\s*'([^']+)'\\s*,\\s*'admin\\/login\\/index'\\s*\\)/i", $routetext, $matches)) {
+        return $matches[1];
+    }
+
     $admin = getSubstr($routetext, "Route::rule('", "','admin/login/index')");
-    return $admin;
+    return $admin !== '' ? $admin : $defaultPath;
 }
 
 /**
