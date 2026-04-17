@@ -1,0 +1,54 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">TOKEN配置</div>
+    <form id="formtoken" action="" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">TOKEN：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" id="tokentext" class="form-control" name="config[token]" value="***密文***" readonly="readonly">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>token用于添加订单使用,切勿泄漏给他人</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button id="puttoken" class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 生成随机TOKEN</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('#puttoken').click(function(){
+        layer.confirm('是否生成新的TOKEN?', {btn:['确定','取消']}, function(index){
+            var len=32, $chars='ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678', maxPos=$chars.length, pwd='';
+            for(var i=0;i<len;i++){ pwd+=$chars.charAt(Math.floor(Math.random()*maxPos)); }
+            layer.msg(pwd+"<br><br>请复制牢记您的新TOKEN", {
+                icon:1, time:0,
+                btn:['确定生成','取消生成'],
+                yes:function(index){
+                    $('#tokentext').val(pwd);
+                    $("#formtoken").attr("action","{:url('save')}");
+                    $("#formtoken").submit();
+                }
+            });
+        },function(index){ layer.close(index); });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

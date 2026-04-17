@@ -1,0 +1,125 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;background:#fff;padding:10px 14px;border-radius:6px;border:1px solid #e8e8e8}
+.g-search{display:flex;align-items:center;gap:6px;flex:1;min-width:220px}
+.g-search input{height:30px;border:1px solid #d9d9d9;border-radius:4px;padding:0 8px;font-size:12px;flex:1;min-width:160px;outline:none;transition:border .2s}
+.g-search input:focus{border-color:#2563eb}
+.g-btn-search{background:#2563eb;color:#fff;border:none;height:30px;padding:0 12px;border-radius:4px;font-size:12px;cursor:pointer}
+.g-table-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;overflow-x:auto}
+.g-table{width:100%;border-collapse:collapse;font-size:12px}
+.g-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.g-table td{padding:5px 10px;border-bottom:1px solid #f1f5f9;color:#334155;vertical-align:middle}
+.g-table tr:hover td{background:#f8fafc}
+.g-footer{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#fff;border-radius:0 0 6px 6px;border-top:1px solid #e8e8e8}
+.g-total{font-size:13px;color:#64748b}
+.g-empty{text-align:center;padding:40px;color:#94a3b8;font-size:14px}
+.spiner-example{text-align:center;padding:60px}
+.sk-spinner-three-bounce .sk-bounce1,.sk-spinner-three-bounce .sk-bounce2,.sk-spinner-three-bounce .sk-bounce3{width:12px;height:12px;background:#2563eb;border-radius:50%;display:inline-block;animation:sk-bouncedelay 1.4s infinite ease-in-out both}
+.sk-spinner-three-bounce .sk-bounce1{animation-delay:-.32s}
+.sk-spinner-three-bounce .sk-bounce2{animation-delay:-.16s}
+@keyframes sk-bouncedelay{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+
+<div class="g-toolbar">
+    <div class="g-search">
+        <input type="text" id="key" value="{$val}" placeholder="搜索用户名" />
+        <button class="g-btn-search" onclick="Ajaxpage()"><i class="fa fa-search"></i> 搜索</button>
+    </div>
+</div>
+
+<div class="g-table-wrap">
+    <table class="g-table">
+        <thead>
+            <tr>
+                <th width="5%">ID</th>
+                <th width="10%">用户名字</th>
+                <th width="6%">类型</th>
+                <th width="8%">金额</th>
+                <th width="20%">备注</th>
+                <th width="12%">操作时间</th>
+                <th width="12%">操作地址</th>
+            </tr>
+        </thead>
+        <script id="list-template" type="text/html">
+            {{# for(var i=0;i<d.length;i++){  }}
+            <tr>
+                <td style="color:#94a3b8">{{d[i].id}}</td>
+                <td>{{d[i].account}}</td>
+                {{# if(d[i].type==1){ }}
+                <td><span style="color:#ef4444;">支出</span></td>
+                <td><span style="color:#ef4444;">-{{d[i].money}}</span></td>
+                {{# }else{ }}
+                <td><span style="color:#059669;">收入</span></td>
+                <td><span style="color:#059669;">+{{d[i].money}}</span></td>
+                {{# } }}
+                <td>{{d[i].make}}</td>
+                <td>{{d[i].create_time}}</td>
+                <td>{{d[i].ipaddr.country}}{{d[i].ipaddr.area}}</td>
+            </tr>
+            {{# } }}
+        </script>
+        <tbody id="list-content"></tbody>
+    </table>
+    <div class="g-footer">
+        <span class="g-total">共 {$count} 条数据</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <span id="allpage" class="g-total"></span>
+            <div id="AjaxPage"></div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="spiner-example">
+    <div class="sk-spinner sk-spinner-three-bounce">
+        <div class="sk-bounce1"></div>
+        <div class="sk-bounce2"></div>
+        <div class="sk-bounce3"></div>
+    </div>
+</div>
+
+{include file="public/footer" /}
+
+<script type="text/javascript">
+var _URL='{:url("log/member_money_log")}';
+var _ALLPAGE='{$allpage}';
+</script>
+{literal}
+<script type="text/javascript">
+$('#key').on('keydown',function(e){if(e.keyCode==13){Ajaxpage();return false;}});
+Ajaxpage();
+function Ajaxpage(curr){
+    var key=$('#key').val();
+    $.getJSON(_URL, {page: curr || 1,key:key}, function(data){
+        $(".spiner-example").css('display','none');
+        if(data==''){
+            $("#list-content").html('<tr><td colspan="7" class="g-empty">暂无数据</td></tr>');
+        }else{
+            var tpl = document.getElementById('list-template').innerHTML;
+            laytpl(tpl).render(data, function(html){
+                document.getElementById('list-content').innerHTML = html;
+            });
+            laypage({
+                cont: $('#AjaxPage'),
+                pages: _ALLPAGE,
+                skip: true,
+                skin: '#2563eb',
+                curr: curr || 1,
+                groups: 5,
+                jump: function(obj, first){
+                    if(!first){ Ajaxpage(obj.curr) }
+                    $('#allpage').html('第'+ obj.curr +'页 / 共'+ obj.pages +'页');
+                }
+            });
+        }
+    });
+}
+</script>
+{/literal}
+</body>
+</html>

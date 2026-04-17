@@ -1,0 +1,175 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">支付配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">支付宝：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[blfk_pay_alipay]">
+                    <option value="0" {if condition="$config['blfk_pay_alipay'] eq 0 "}selected{/if}>关闭</option>
+                    <option value="Yzf" {if condition="$config['blfk_pay_alipay'] eq 'Yzf' "}selected{/if}>蓝支付</option>
+                    <option value="Mq" {if condition="$config['blfk_pay_alipay'] eq 'Mq' "}selected{/if}>安卓免签</option>
+                    <option value="Mzf" {if condition="$config['blfk_pay_alipay'] eq 'Mzf' "}selected{/if}>码支付</option>
+                    <option value="Alipay" {if condition="$config['blfk_pay_alipay'] eq 'Alipay' "}selected{/if}>当面付</option>
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信支付：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[blfk_pay_wxpay]">
+                    <option value="0" {if condition="$config['blfk_pay_wxpay'] eq 0 "}selected{/if}>关闭</option>
+                    <option value="Yzf" {if condition="$config['blfk_pay_wxpay'] eq 'Yzf' "}selected{/if}>蓝支付</option>
+                    <option value="Mq" {if condition="$config['blfk_pay_wxpay'] eq 'Mq' "}selected{/if}>安卓免签</option>
+                    <option value="Mzf" {if condition="$config['blfk_pay_wxpay'] eq 'Mzf' "}selected{/if}>码支付</option>
+                    <option value="Weixin" {if condition="$config['blfk_pay_wxpay'] eq 'Weixin' "}selected{/if}>微信官方</option>
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">聚合支付：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[blfk_pay_Unionpay]">
+                    <option value="0" {if condition="$config['blfk_pay_Unionpay'] eq 0 "}selected{/if}>关闭</option>
+                    <option value="Mzf" {if condition="$config['blfk_pay_Unionpay'] eq 'Mzf' "}selected{/if}>码支付</option>
+                    <option value="Mq" {if condition="$config['blfk_pay_Unionpay'] eq 'Mq' "}selected{/if}>安卓免签</option>
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信H5：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[wx_h5]">
+                    <option value="0" {if condition="$config['wx_h5'] eq 0 "}selected{/if}>关闭</option>
+                    <option value="1" {if condition="$config['wx_h5'] eq '1' "}selected{/if}>开启</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>使用官方微信接口的情况关闭将默认使用native支付</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信JSAPI：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[wx_jsapi]">
+                    <option value="0" {if condition="$config['wx_jsapi'] eq 0 "}selected{/if}>关闭</option>
+                    <option value="1" {if condition="$config['wx_jsapi'] eq '1' "}selected{/if}>开启</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>使用官方微信接口的情况关闭将默认使用native支付</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">支付宝应用appid：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[app_id]" value="{$config.app_id}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i><a href="http://xw.wyisp.com/" target="_blank">当面付开通</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">支付宝公钥：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[ali_public_key]" value="{$config.ali_public_key}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>回调地址{:config('is_https')}:// {$_SERVER['HTTP_HOST']}/pay/callback/callbackalipay.html</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">应用私钥：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[rsa_private_key]" value="{$config.rsa_private_key}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>回调地址如之前未填写最好别填写</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信支付商户号：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[mch_id]" value="{$config.mch_id}">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信支付APPID：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[wx_appid]" value="{$config.wx_appid}">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信支付API密钥：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[wx_apiKey]" value="{$config.wx_apiKey}">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信支付对应公众号的AppSecret：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[wx_appKey]" value="{$config.wx_appKey}">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">免签密钥：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pay_mqkey]" value="{$config.pay_mqkey}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>和免签设置的通讯密钥设置相同</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">蓝支付对接ID：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pay_yzfid]" value="{$config.pay_yzfid}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i><a href="http://xw.wyisp.com/" target="_blank">申请账号</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">蓝支付对接Token：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pay_yzfkey]" value="{$config.pay_yzfkey}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>免营业执照轮询收款</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">码支付ID：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pay_mzfid]" value="{$config.pay_mzfid}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i><a href="http://mzf.lailiyun.com/" target="_blank">申请账号</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">码支付密钥：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pay_mzfkey]" value="{$config.pay_mzfkey}">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

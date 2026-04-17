@@ -1,0 +1,14 @@
+<?php
+
+namespace app\jingdian\validate;
+use think\Validate;
+
+class MemberValidate extends Validate
+{
+    protected $rule = [
+    	['account', 'require|max:20|min:6|unique:member', '用户名不能为空|用户名长度不能大于20个字符|用户名长度不能小于6个字符|该会员已经存在'],
+    	['password', 'require', '密码不能为空'],
+    	['email', 'require|email|unique:member', '联系邮箱不能为空|邮箱格式不正确|邮箱已经存在'],
+    ];
+
+}

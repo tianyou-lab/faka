@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260220-auth2">
+    <link rel="stylesheet" href="/static/cdn/layer/2.2/skin/default/layer.css">
+</head>
+<body>
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+            <a href="{:url('Index/goodscategoryall')}">商品分类</a>
+        </nav>
+        <div class="mod-user-link">
+            <a href="{:url('Index/index')}">返回商城</a>
+        </div>
+    </div>
+</header>
+
+<div class="mod-auth-wrap">
+    <div class="mod-auth-card">
+        <h1>注册账号</h1>
+        <p class="mod-auth-subtitle">创建账号后可享受会员权益</p>
+
+        {if condition="config('web_reg_xingshi') eq 2"}
+        <div class="mod-auth-toggle">
+            <a class="mod-auth-toggle-btn active" href="{:url('jingdian/user/reg')}">普通注册</a>
+            <a class="mod-auth-toggle-btn" href="{:url('jingdian/user/regmobile')}">手机注册</a>
+        </div>
+        {/if}
+
+        <form action="{:url('@jingdian/user/reg')}" method="post" id="doreg">
+            <div class="mod-form-group">
+                <label class="mod-form-label">用户名</label>
+                <input type="text" class="mod-form-input" id="account" name="account" autocomplete="off" placeholder="字母或数字，6-20位">
+            </div>
+            <div class="mod-form-group">
+                <label class="mod-form-label">登录密码</label>
+                <input type="password" style="display:none" autocomplete="off">
+                <input type="password" class="mod-form-input" id="password" name="password" placeholder="请输入密码，6-20位">
+            </div>
+            <div class="mod-form-group">
+                <label class="mod-form-label">确认密码</label>
+                <input type="password" style="position:absolute;top:-998px">
+                <input type="password" class="mod-form-input" id="password2" placeholder="请再次输入密码">
+            </div>
+            <div class="mod-form-group">
+                <label class="mod-form-label">联系邮箱</label>
+                <input type="text" class="mod-form-input" id="email" name="email" autocomplete="off" placeholder="请输入邮箱">
+            </div>
+
+            {if condition="config('CODE_TYPE') eq 0"}
+            <div class="mod-form-group">
+                <label class="mod-form-label">验证码</label>
+                <div class="mod-auth-code-row">
+                    <input type="text" class="mod-form-input" id="veri" name="code" placeholder="请输入验证码">
+                    <img id="veriimg" class="mod-auth-code-img" src="{:url('checkVerify')}" onclick="javascript:this.src='{:url('checkVerify')}?tm='+Math.random();">
+                </div>
+            </div>
+            {else/}
+            <div class="mod-form-group">
+                <label class="mod-form-label">行为验证</label>
+                <div id="captcha" class="mod-auth-captcha-box">
+                    <div id="text">行为验证™ 安全组件加载中</div>
+                    <div id="wait" class="show">
+                        <div class="loading">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
+            <div class="mod-auth-agree">
+                <input type="hidden" name="agree" value="1">
+                <span>注册即表示同意 <a href="#">《注册协议说明》</a></span>
+            </div>
+
+            <button class="mod-goods-btn" id="regbtn" type="submit" style="width:100%;margin-top:6px;">注册</button>
+        </form>
+
+        <div class="mod-auth-links" style="margin-top:16px;">
+            <a href="{:url('jingdian/user/index')}">已有账号？马上登录</a>
+            <a href="{:url('Index/index')}">返回首页</a>
+        </div>
+    </div>
+</div>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script src="/static/cdn/jquery.form/3.51/jquery.form.min.js"></script>
+<script src="/static/cdn/layer/2.2/layer.js"></script>
+<script src="/static/admin/js/lunhui.js"></script>
+<script src="__GT__/js/gt.js"></script>
+<script>
+function removeAllSpace(str){
+    if(typeof(str)==="undefined") return '';
+    return str.replace(/\s+/g,"");
+}
+function checkaccount(account){
+    if(account.length<6){ layer.tips('用户名长度不能小于6个字符','#account',{time:3000}); return false; }
+    if(account.length>20){ layer.tips('用户名长度不能大于20个字符','#account',{time:3000}); return false; }
+    if(account===''){ layer.tips('用户名不能为空','#account'); return false; }
+    var reg=new RegExp("[\\u4E00-\\u9FFF]+","g");
+    if(reg.test(account)){ layer.tips('用户名不支持汉字，只支持字母、数字(6-20)位','#account',{time:3000}); return false; }
+    var p=/^[0-9a-zA-Z]*$/g;
+    if(!p.test(account)){ layer.tips('用户名只支持字母、数字(6-20)位','#account',{time:3000}); return false; }
+    return true;
+}
+function in_array(s,a){ for(var i=0;i<a.length;i++){if(a[i].toString()===s)return true;} return false; }
+function checkpassword(password){
+    var weak=["123456","a123456","123456a","5201314","111111","000000","qq123456","123123","qwe123"];
+    if(in_array(password,weak)){ layer.tips(password+'是弱密码不能使用','#password',{time:3000}); return false; }
+    if(password.length<6){ layer.tips('密码长度不能小于6个字符','#password',{time:3000}); return false; }
+    if(password.length>20){ layer.tips('密码长度不能大于20个字符','#password',{time:3000}); return false; }
+    if(password===''){ layer.tips('密码不能为空','#password',{time:3000}); return false; }
+    var reg=new RegExp("[\\u4E00-\\u9FFF]+","g");
+    if(reg.test(password)){ layer.tips('密码不支持汉字','#password',{time:3000}); return false; }
+    return true;
+}
+function isPoneAvailable(str){ return /^[1][0-9]{10}$/.test(str); }
+function fChkMail(m){ return /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(m); }
+function isQQ(qq){ return /^[1-9]\d{4,12}$/.test(qq+""); }
+
+$(function(){
+    $('#doreg').ajaxForm({
+        beforeSubmit: checkForm,
+        success: complete,
+        dataType: 'json'
+    });
+
+    function checkForm(){
+        var account=removeAllSpace($('#account').val());
+        if(!checkaccount(account)) return false;
+        var password=removeAllSpace($('#password').val());
+        if(!checkpassword(password)) return false;
+        var password2=removeAllSpace($('#password2').val());
+        if(password!==password2){ layer.tips('两次输入密码不一样','#password2',{time:3000}); return false; }
+        var email=removeAllSpace($('#email').val());
+        if(!fChkMail(email)){ layer.tips('请输入正确的联系邮箱','#email',{time:3000}); return false; }
+        {if condition="config('CODE_TYPE') eq 0"}
+        var veri=removeAllSpace($('#veri').val());
+        if(veri.length<4){ layer.tips('验证码不正确','#veri',{time:3000}); return false; }
+        {else/}
+        var result=publicObj.getValidate();
+        if(!result){ layer.tips('请先完成验证','#captcha',{time:1000}); return false; }
+        {/if}
+        $('#regbtn').text('注册中...').attr('disabled',true).addClass('off');
+    }
+
+    function complete(data){
+        if(data.code==1){
+            lunhui.success(data.msg,data.url);
+        }else{
+            lunhui.error(data.msg);
+            {if condition="config('CODE_TYPE') eq 0"}
+            $('#veriimg').attr('src',"{:url('checkVerify')}");
+            {else/}
+            publicObj.reset();
+            {/if}
+            $('#regbtn').text('注册').attr('disabled',false).removeClass('off');
+            return false;
+        }
+    }
+});
+
+{if condition="config('CODE_TYPE') eq 1"}
+var publicObj;
+var handler=function(captchaObj){
+    captchaObj.appendTo('#captcha');
+    captchaObj.onReady(function(){ $('#wait').hide(); });
+    publicObj=captchaObj;
+    window.gt=captchaObj;
+};
+$.ajax({
+    url:'/jingdian/geetest/StartCaptchaServlet?t='+(new Date()).getTime(),
+    type:'get',dataType:'json',
+    success:function(data){
+        $('#text').hide();$('#wait').show();
+        initGeetest({gt:data.gt,challenge:data.challenge,offline:!data.success,new_captcha:data.new_captcha,product:'float',width:'100%'},handler);
+    }
+});
+{/if}
+</script>
+</body>
+</html>

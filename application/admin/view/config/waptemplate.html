@@ -1,0 +1,95 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">WAP模版配置</div>
+    <form id="wapformmoban" action="" method="post" class="form-horizontal">
+        <input type="hidden" id="wapmoban_index" name="config[wapmoban_index]" value="{$config.wapmoban_index}">
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/wapjingdian.jpg" alt="经典wap模版" width="200" height="400">
+                    <div class="caption" style="text-align: center;">
+                        <h3>经典wap模版</h3>
+                        <p>
+                            {if condition="$config.wapmoban_index eq 1"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="wapmoban1" name="wapqiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/wapjiandan.png" alt="简单风格模版" width="200" height="400">
+                    <div class="caption" style="text-align: center;">
+                        <h3>简单风格模版</h3>
+                        <p>
+                            {if condition="$config.wapmoban_index eq 2"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="wapmoban2" name="wapqiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/imgmobile.jpg" alt="图片风格模版" width="200" height="400">
+                    <div class="caption" style="text-align: center;">
+                        <h3>图片风格模版</h3>
+                        <p>
+                            {if condition="$config.wapmoban_index eq 3"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="wapmoban3" name="wapqiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/youyunbao.jpg" alt="优云宝" width="200" height="400">
+                    <div class="caption" style="text-align: center;">
+                        <h3>优云宝</h3>
+                        <p>
+                            {if condition="$config.wapmoban_index eq 4"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="wapmoban4" name="wapqiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('button[name=wapqiyong]').click(function(){
+        var index = $(this).attr("id");
+        if(index=='wapmoban1'){ $('#wapmoban_index').val("1"); }
+        else if(index=='wapmoban2'){ $('#wapmoban_index').val("2"); }
+        else if(index=='wapmoban3'){ $('#wapmoban_index').val("3"); }
+        else if(index=='wapmoban4'){ $('#wapmoban_index').val("4"); }
+        $("#wapformmoban").attr("action", "{:url('save')}");
+        $("#wapformmoban").submit();
+        return false;
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">颜色配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">热门分类背景颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[hotcolor]" value="{$config.hotcolor}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> 热门分类背景颜色（wap图片风格模版）<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">爆款推荐背景颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[baocolor]" value="{$config.baocolor}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> 爆款推荐背景颜色（wap图片风格模版）<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">PC经典模版标题背景颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pc_jingdian_title_beijing_color]" value="{$config.pc_jingdian_title_beijing_color}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> PC经典模版标题背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">PC经典模版标题颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pc_jingdian_title_color]" value="{$config.pc_jingdian_title_color}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> PC经典模版标题颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">PC经典模版公告背景颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pc_jingdian_gg_color]" value="{$config.pc_jingdian_gg_color}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> PC经典模版公告背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">PC经典模版底部背景颜色：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[pc_jd_footer_color]" value="{$config.pc_jd_footer_color}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> PC经典模版底部背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

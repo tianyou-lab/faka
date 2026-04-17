@@ -1,0 +1,50 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">添加卡密</div>
+    <form method="post" action="{:url('@api/Apimail/addadminkami')}" id="addkamiform">
+        <input type="hidden" name='mpid' value="{$shopdetail['id']}">
+        <input type="hidden" name='addqudao' value="{$uid}">
+        <input type="hidden" name='token' value="{:config('token')}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">添加卡密：</label>
+            <div class="input-group col-sm-4">
+                <textarea class="form-control" type="text" placeholder="卡密内容（一行一个，最多1000个）" rows="20" id="shopdesc" name="values"></textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>{$shopdetail['mname']}</div>
+            </div>
+        </div>
+        <button class="btn btn-success block" type="submit" style="width:95%;">提交补货</button>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('#addkamiform').ajaxForm({
+        beforeSubmit: function(){
+            window._loadindex = layer.open({type:1});
+            if($('#shopdesc').val()==''){
+                layer.open({content:'卡密不能为空',btn:'我知道了'});
+                layer.close(window._loadindex);
+                return false;
+            }
+        },
+        success: function(data){
+            layer.close(window._loadindex);
+            layer.msg(data.msg);
+        },
+        dataType:'json'
+    });
+});
+</script>
+</body>
+</html>

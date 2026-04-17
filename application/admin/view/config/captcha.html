@@ -1,0 +1,53 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">验证码配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">验证码类型：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[CODE_TYPE]">
+                    <option value="0" {if condition="$config['CODE_TYPE'] eq 0 "}selected{/if}>普通验证码</option>
+                    <option value="1" {if condition="$config['CODE_TYPE'] eq 1 "}selected{/if}>极验滑块验证码</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>注意：选择极验的需要填写下面的ID KEY</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">极验滑块ID：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[Geetest_ID]" value="{$config.Geetest_ID}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i><a href="http://www.geetest.com" target="_blank">极验geetest官方</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">极验滑块KEY：</label>
+            <div class="input-group col-sm-4">
+                <input type="password" class="form-control" name="config[Geetest_KEY]" value="{$config.Geetest_KEY}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i><a href="http://www.geetest.com" target="_blank">极验geetest官方</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

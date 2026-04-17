@@ -1,0 +1,256 @@
+{extend name="public/layout" /}
+{block name="content"}
+{literal}<style>
+.g-page{padding:10px}
+.g-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;background:#fff;padding:10px 14px;border-radius:6px;border:1px solid #e8e8e8}
+.g-search{display:flex;align-items:center;gap:6px;flex:1;min-width:220px}
+.g-search input,.g-search select{height:30px;border:1px solid #d9d9d9;border-radius:4px;padding:0 8px;font-size:12px;outline:none;transition:border .2s}
+.g-search input:focus{border-color:#2563eb}
+.g-btn{height:30px;padding:0 12px;border-radius:4px;font-size:12px;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:#fff}
+.g-btn-primary{background:#2563eb}.g-btn-primary:hover{background:#1d4ed8;color:#fff}
+.g-btn-search{background:#2563eb;color:#fff;border:none;height:30px;padding:0 12px;border-radius:4px;font-size:12px;cursor:pointer}
+.g-table-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;overflow-x:auto}
+.g-table{width:100%;border-collapse:collapse;font-size:12px}
+.g-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.g-table td{padding:5px 10px;border-bottom:1px solid #f1f5f9;color:#334155;vertical-align:middle}
+.g-table tr:hover td{background:#f8fafc}
+.g-tag{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:500}
+.g-tag-on{background:#dcfce7;color:#166534}.g-tag-off{background:#f1f5f9;color:#64748b}
+.g-act{padding:2px 8px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid #e5e7eb;background:#fff;color:#475569;transition:all .15s;text-decoration:none;display:inline-block;margin:1px}
+.g-act:hover{border-color:#2563eb;color:#2563eb}
+.g-act-del{color:#ef4444;border-color:#fecaca}.g-act-del:hover{background:#fef2f2;border-color:#ef4444}
+.g-act-success{color:#059669;border-color:#a7f3d0}.g-act-success:hover{background:#ecfdf5;border-color:#059669}
+.g-act-warn{color:#d97706;border-color:#fde68a}.g-act-warn:hover{background:#fffbeb;border-color:#d97706}
+.g-act-info{color:#2563eb;border-color:#bfdbfe}.g-act-info:hover{background:#eff6ff;border-color:#2563eb}
+.g-footer{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#fff;border-radius:0 0 6px 6px;border-top:1px solid #e8e8e8}
+.g-total{font-size:13px;color:#64748b}
+.copy-btn{cursor:pointer;color:#2563eb;margin-left:5px}.copy-btn:hover{color:#1d4ed8}
+.toggle-secret{cursor:pointer;color:#676a6c;margin-left:10px}.toggle-secret:hover{color:#2563eb}
+.secret-text,.secret-full{display:inline-block}
+.paginate_button{display:inline-block;padding:2px 8px;margin:0 2px;border:1px solid #e5e7eb;border-radius:4px;font-size:12px;color:#475569;text-decoration:none;cursor:pointer}
+.paginate_button:hover{border-color:#2563eb;color:#2563eb}
+.paginate_button.current{background:#2563eb;color:#fff;border-color:#2563eb}
+</style>
+{/literal}
+<div class="g-page">
+
+<div class="g-toolbar">
+    <a href="{:url('add')}" class="g-btn g-btn-primary"><i class="fa fa-plus"></i> 添加秘钥</a>
+    <div class="g-search">
+        <input type="text" id="key" value="{$val}" placeholder="应用名称/AppID" style="min-width:160px;" />
+        <select id="status" style="min-width:90px;">
+            <option value="">全部状态</option>
+            <option value="1" {if $status == 1}selected{/if}>启用</option>
+            <option value="0" {if $status == 0}selected{/if}>停用</option>
+        </select>
+        <button class="g-btn-search" onclick="searchData()"><i class="fa fa-search"></i> 搜索</button>
+    </div>
+</div>
+
+<div class="g-table-wrap">
+    <table class="g-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>应用名称</th>
+                <th>AppID</th>
+                <th>AppSecret</th>
+                <th>描述</th>
+                <th>状态</th>
+                <th>调用统计</th>
+                <th>最后使用</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="apikey-list">
+            {foreach name="lists" item="vo"}
+            <tr>
+                <td style="color:#94a3b8">{$vo.id}</td>
+                <td>{$vo.app_name}</td>
+                <td>
+                    <code>{$vo.app_id}</code>
+                    <i class="fa fa-copy copy-btn" data-clipboard-text="{$vo.app_id}" title="复制"></i>
+                </td>
+                <td>
+                    <span class="secret-text">******</span>
+                    <span class="secret-full" style="display:none;">
+                        <code>{$vo.app_secret}</code>
+                        <i class="fa fa-copy copy-btn" data-clipboard-text="{$vo.app_secret}" title="复制"></i>
+                    </span>
+                    <i class="fa fa-eye toggle-secret" title="显示/隐藏"></i>
+                </td>
+                <td>{$vo.description|default='暂无描述'}</td>
+                <td>
+                    {if $vo.status == 1}
+                        <span class="g-tag g-tag-on">启用</span>
+                    {else}
+                        <span class="g-tag g-tag-off">停用</span>
+                    {/if}
+                </td>
+                <td>
+                    <a class="g-act g-act-info" href="{:url('stats', ['id' => $vo.id])}"><i class="fa fa-bar-chart"></i> 统计</a>
+                </td>
+                <td>
+                    {if $vo.last_used_time > 0}
+                        {$vo.last_used_time|date='Y-m-d H:i:s',###}
+                    {else}
+                        <span style="color:#94a3b8">从未使用</span>
+                    {/if}
+                </td>
+                <td>{$vo.create_time|date='Y-m-d H:i:s',###}</td>
+                <td>
+                    <a class="g-act" href="{:url('edit', ['id' => $vo.id])}"><i class="fa fa-edit"></i> 编辑</a>
+                    {if $vo.status == 1}
+                        <a class="g-act g-act-warn" href="javascript:;" onclick="toggleStatus({$vo.id}, 0)"><i class="fa fa-pause"></i> 停用</a>
+                    {else}
+                        <a class="g-act g-act-success" href="javascript:;" onclick="toggleStatus({$vo.id}, 1)"><i class="fa fa-play"></i> 启用</a>
+                    {/if}
+                    <a class="g-act g-act-info" href="javascript:;" onclick="regenerateSecret({$vo.id})"><i class="fa fa-refresh"></i> 重生成</a>
+                    <a class="g-act g-act-del" href="javascript:;" onclick="deleteApikey({$vo.id})"><i class="fa fa-trash"></i> 删除</a>
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    <div class="g-footer">
+        <span class="g-total">共 {$count} 条记录</span>
+        <div id="pagination">
+            {if $allpage > 1}
+                {for start="1" end="$allpage+1"}
+                    {if $i == $Nowpage}
+                        <span class="paginate_button current">{$i}</span>
+                    {else}
+                        <a href="javascript:void(0)" class="paginate_button" onclick="loadPage({$i})">{$i}</a>
+                    {/if}
+                {/for}
+            {/if}
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- API文档模态框 -->
+<div class="modal fade" id="apiDocModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">API使用文档</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">1. 获取商品列表</a></h4></div>
+                        <div id="collapse1" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <strong>请求地址：</strong> GET /api/goods/getGoodsList<br>
+                                <strong>请求参数：</strong><br>
+                                <pre>app_id: 应用ID
+app_secret: 应用秘钥
+page: 页码（可选，默认1）
+limit: 每页数量（可选，默认20）
+category_id: 分类ID（可选）
+keyword: 搜索关键词（可选）</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse2">2. 创建订单</a></h4></div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <strong>请求地址：</strong> POST /api/goods/createOrder<br>
+                                <strong>请求参数：</strong><br>
+                                <pre>app_id: 应用ID
+app_secret: 应用秘钥
+goods_id: 商品ID
+quantity: 数量（可选，默认1）
+contact_info: 联系方式
+attach_info: 附加信息（JSON格式）</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3">3. 获取支付二维码</a></h4></div>
+                        <div id="collapse3" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <strong>请求地址：</strong> POST /api/goods/getPaymentQRCode<br>
+                                <strong>请求参数：</strong><br>
+                                <pre>app_id: 应用ID
+app_secret: 应用秘钥
+order_no: 订单号
+pay_type: 支付类型（alipay或wechat）</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https:/static/cdn/clipboard/2/dist/clipboard.min.js"></script>
+<script>
+new ClipboardJS('.copy-btn').on('success', function(e) {
+    layer.msg('复制成功', {icon:1, time:1000});
+    e.clearSelection();
+});
+
+$(document).on('click', '.toggle-secret', function() {
+    var $row = $(this).closest('td');
+    var $text = $row.find('.secret-text');
+    var $full = $row.find('.secret-full');
+    if($text.is(':visible')){
+        $text.hide(); $full.show();
+        $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+    }else{
+        $text.show(); $full.hide();
+        $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+    }
+});
+
+function searchData(){
+    var key=$('#key').val(), status=$('#status').val();
+    window.location.href='?key='+key+'&status='+status;
+}
+function loadPage(page){
+    var key=$('#key').val(), status=$('#status').val();
+    window.location.href='?page='+page+'&key='+key+'&status='+status;
+}
+function toggleStatus(id, status){
+    var text = status==1?'启用':'停用';
+    layer.confirm('确定要'+text+'此API秘钥吗？', {btn:['确定','取消']}, function(index){
+        $.post('{:url("status")}', {id:id,status:status}, function(res){
+            if(res.code==1){ layer.msg(res.msg,{icon:1}); setTimeout(function(){location.reload()},1000); }
+            else{ layer.msg(res.msg,{icon:2}); }
+        });
+        layer.close(index);
+    });
+}
+function regenerateSecret(id){
+    layer.confirm('重新生成秘钥后，原秘钥将失效，确定继续吗？', {btn:['确定','取消']}, function(index){
+        $.post('{:url("regenerate")}', {id:id}, function(res){
+            if(res.code==1){
+                layer.alert('新秘钥：<br><code>'+res.data+'</code>', {title:'秘钥重新生成成功',btn:['确定'],yes:function(){location.reload();}});
+            }else{ layer.msg(res.msg,{icon:2}); }
+        });
+        layer.close(index);
+    });
+}
+function deleteApikey(id){
+    layer.confirm('确定要删除此API秘钥吗？删除后不可恢复！', {btn:['确定','取消']}, function(index){
+        $.post('{:url("del")}', {id:id}, function(res){
+            if(res.code==1){ layer.msg(res.msg,{icon:1}); setTimeout(function(){location.reload()},1000); }
+            else{ layer.msg(res.msg,{icon:2}); }
+        });
+        layer.close(index);
+    });
+}
+function showApiDoc(){ $('#apiDocModal').modal('show'); }
+$('#key').keypress(function(e){ if(e.which==13) searchData(); });
+</script>
+{/block}

@@ -1,0 +1,66 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">修改管理员用户名</div>
+    <form class="form-horizontal" name="userAdd" id="userAdd" method="post" action="{:url('editadminname')}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">当前登录密码：</label>
+            <div class="col-sm-4">
+                <input id="password" name="password" class="form-control" type="password">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>请输入您的密码</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">新的用户名称：</label>
+            <div class="col-sm-4">
+                <input id="username" name="username" class="form-control" type="text">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>请输入您的新的用户名称</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-3">
+                <button id="btnSubmit" class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('#userAdd').ajaxForm({
+        beforeSubmit: function(){
+            if(''==$.trim($('#password').val())){
+                layer.msg('请输入密码',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+            if($('#username').val().length<6){
+                layer.msg('用户名不能小于6位',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        success: function(data){
+            if(data.code==1){
+                parent.layer.msg(data.msg,{icon:1,time:2000,shade:0.1},function(){ window.location.href="{:url('index/index')}"; });
+            }else{
+                parent.layer.msg(data.msg,{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        dataType:'json'
+    });
+});
+</script>
+</body>
+</html>

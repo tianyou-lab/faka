@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品分类 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260220-auth1">
+</head>
+<body>
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+            <a href="javascript:history.back(-1);">返回</a>
+        </nav>
+    </div>
+</header>
+
+<div class="container" style="padding-top:32px;">
+    <div class="mod-section-title">
+        <h2>全部分类</h2>
+    </div>
+    <div class="mod-tabs">
+        <a class="mod-tab active" href="{:url('Index/goodscategoryall')}">全部</a>
+        {volist name="GoodsListAll" id="vo"}
+        {if condition="count($vo['hehe']) neq 0"}
+        <a class="mod-tab" href="/pc/{$vo['id']}">{$vo['name']}</a>
+        {/if}
+        {/volist}
+    </div>
+
+    {volist name="GoodsListAll" id="vo"}
+    {if condition="count($vo['hehe']) neq 0"}
+    <div class="mod-goods-list">
+        <div class="mod-section-title">
+            <h2>{:htmlspecialchars_decode($vo['loucengname'])}</h2>
+            <span class="mod-badge">{:count($vo['hehe'])} 件</span>
+        </div>
+        <div class="mod-goods-grid">
+            {volist name="vo['hehe']" id="f"}
+            <div class="mod-goods-card">
+                <a href="/pg/{$f['id']}">
+                    <img class="mod-goods-img" src="{$f['webimgurl']}" onerror="this.src='/static/admin/images/head_default.gif'">
+                </a>
+                <div class="mod-goods-body">
+                    <div class="mod-goods-name">
+                        {if condition="$f['type'] eq 0"}<span class="mod-goods-item-tag mod-tag-auto">自动</span>{else/}<span class="mod-goods-item-tag mod-tag-manual">手动</span>{/if}
+                        {:htmlspecialchars_decode($f['mname'])}
+                    </div>
+                    <div class="mod-goods-footer">
+                        <span class="mod-goods-price"><small>¥</small>{if condition="$f.mprice lt 1"}{:number_format($f.mprice/100,4)}{else/}{:number_format($f.mprice/100,2)}{/if}</span>
+                        <span class="mod-goods-stock">{$f.count} 库存</span>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <a href="/pg/{$f['id']}" class="mod-goods-btn" style="width:100%;text-align:center;display:block;color:#fff;">查看详情</a>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+    {/if}
+    {/volist}
+</div>
+
+<footer class="mod-footer">
+    <div class="container"><p>{:config('web_site_copy')}</p></div>
+</footer>
+</body>
+</html>

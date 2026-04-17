@@ -1,0 +1,70 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">邮箱配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱服务器：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[mail_host]" value="{$config.mail_host}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>邮箱服务器</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱端口：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[mail_port]" value="{$config.mail_port}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>邮箱端口</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱帐号：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[mail_username]" value="{$config.mail_username}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>邮箱帐号</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱密码：</label>
+            <div class="input-group col-sm-4">
+                {if condition="$config['mail_password'] eq ''"}
+                <input type="text" class="form-control" name="config[mail_password]" value="{$config.mail_password}">
+                {else/}
+                <input type="text" class="form-control" name="config[mail_password]" value="***密文***">
+                {/if}
+                <div class="g-hint"><i class="fa fa-info-circle"></i>邮箱密码</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">发件人：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[mail_senduser]" value="{$config.mail_senduser}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>发件人</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

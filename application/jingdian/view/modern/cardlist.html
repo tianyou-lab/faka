@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡密信息 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260221-card">
+    <style>
+    .card-wrap{max-width:640px;margin:32px auto;padding:0 16px}
+    .card-box{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e5e7eb;overflow:hidden}
+    .card-head{padding:18px 24px;background:#f0fdf4;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between}
+    .card-head-title{font-size:14px;font-weight:600;color:#166534}
+    .card-head a{font-size:13px;color:#2563eb;text-decoration:none}
+    .card-actions{display:flex;gap:8px;padding:16px 24px;border-bottom:1px solid #f3f4f6;flex-wrap:wrap}
+    .card-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #e5e7eb;background:#fff;color:#374151;transition:all .15s;text-decoration:none;display:inline-block}
+    .card-btn:hover{border-color:#2563eb;color:#2563eb}
+    .card-btn-copy{background:#2563eb;color:#fff;border-color:#2563eb}
+    .card-btn-copy:hover{background:#1d4ed8;color:#fff}
+    .card-body{padding:20px 24px;min-height:80px;font-size:14px;line-height:1.8;color:#1f2937;word-break:break-all;white-space:pre-wrap}
+    .card-body img{max-width:48%;height:auto;border-radius:4px;margin:2px}
+    .card-foot{padding:14px 24px;background:#f9fafb;border-top:1px solid #f3f4f6;text-align:center}
+    .card-foot a{font-size:13px;color:#2563eb;text-decoration:none}
+    .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:8px 22px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+    @media(max-width:640px){.card-wrap{margin:12px auto}.card-actions{gap:6px}.card-btn{padding:7px 14px;font-size:12px}.card-body{padding:16px}}
+    </style>
+</head>
+<body>
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo"><div class="mod-logo-icon">F</div><span>{:config('shop_name')}</span></div>
+        <nav class="mod-nav"><a href="{:url('Index/index')}">首页</a></nav>
+    </div>
+</header>
+<div class="card-wrap">
+    <div class="card-box">
+        <div class="card-head">
+            <span class="card-head-title">🔑 订单 {:htmlspecialchars($order)}</span>
+            <a href="{:config('is_https')}://{$_SERVER['HTTP_HOST']}">返回首页</a>
+        </div>
+        <div class="card-actions">
+            <a class="card-btn" onclick="download('{:htmlspecialchars($order)}')">📥 保存本地</a>
+            <a class="card-btn card-btn-copy" onclick="copyKami()">📋 复制卡密</a>
+            <a class="card-btn" onclick="viewKami()">👁 查看卡密</a>
+        </div>
+        <div class="card-body" id="kamiText">{$myfile|htmlspecialchars_decode}</div>
+        <div class="card-foot"><a href="{:url('User/uscenter')}">← 返回个人中心</a></div>
+    </div>
+</div>
+<div class="toast" id="toast">✅ 已复制到剪贴板</div>
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script>
+function download(o){location.href="{:url('Index/dc')}"+"?order="+o}
+function viewKami(){document.getElementById('kamiText').scrollIntoView({behavior:'smooth'})}
+function copyKami(){
+    var t=(document.getElementById('kamiText').innerText||'').replace(/^\s+|\s+$/g,'');
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(showT).catch(function(){fb(t)})}else{fb(t)}
+}
+function fb(t){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');showT()}catch(e){alert('复制失败')}document.body.removeChild(a)}
+function showT(){var e=document.getElementById('toast');e.style.display='block';setTimeout(function(){e.style.display='none'},1800)}
+</script>
+</body>
+</html>

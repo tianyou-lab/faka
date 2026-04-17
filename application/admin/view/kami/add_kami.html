@@ -1,0 +1,79 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/webuploader.css">
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#ef4444;margin-top:4px;font-weight:600}
+input[type=file]{display:none}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">添加卡密</div>
+    <div style="margin-bottom:10px;">
+        <div id="fileList" class="uploader-list" style="float:right"></div>
+        <button class="btn btn-outline btn-primary" type="button" id="imgPicker">上传图片</button>
+    </div>
+    <form method="post" action="{:url('@api/Apimail/addadminkami')}" id="addkamiform">
+        <input type="hidden" name='mpid' value="{$shopdetail['id']}">
+        <input type="hidden" name='addqudao' value="{$uid}">
+        <input type="hidden" name='token' value="{:config('token')}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">添加卡密：</label>
+            <div class="input-group col-sm-4">
+                <textarea id="data_photo" class="form-control" type="text" placeholder="卡密内容（一行一个，最多1000个）" rows="20" name="values"></textarea>
+                <div class="g-hint">{$shopdetail['mname']}</div>
+            </div>
+        </div>
+        <button class="btn btn-success block" type="submit" style="width:95%;">提交补货</button>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript" src="/static/admin/webupload/webuploader.min.js"></script>
+<script type="text/javascript">
+var $list = $('#fileList');
+var uploader = WebUploader.create({
+    auto: true,
+    swf: '/static/admin/webupload/Uploader.swf',
+    server: "{:url('Upload/upload')}",
+    duplicate: true,
+    pick: '#imgPicker',
+    compress: false,
+    resize: false,
+    accept: { title:'Images', extensions:'gif,jpg,jpeg,bmp,png', mimeTypes:'image/jpg,image/jpeg,image/png' },
+    'onUploadSuccess': function(file, data, response) {
+        var shuju = document.getElementById("data_photo").value;
+        if(shuju.length > 10){ shuju = shuju + "\r\n"; }
+        $("#data_photo").val(shuju + data._raw);
+    }
+});
+uploader.on('fileQueued', function(file) {
+    $list.html('<div id="' + file.id + '" class="item"><h4 class="info">' + file.name + '</h4><p class="state">正在上传...</p></div>');
+});
+uploader.on('uploadSuccess', function(file) { $('#'+file.id).find('p.state').text('上传成功！'); });
+uploader.on('uploadError', function(file) { $('#'+file.id).find('p.state').text('上传出错!'); });
+
+$(function(){
+    $('#addkamiform').ajaxForm({
+        beforeSubmit: function(){
+            window._loadindex = layer.load(2);
+            if($('#data_photo').val()==''){
+                layer.open({content:'卡密不能为空',btn:'我知道了'});
+                layer.close(window._loadindex);
+                return false;
+            }
+        },
+        success: function(data){
+            layer.close(window._loadindex);
+            if(data.code==1){ layer.alert(data.msg, {icon:1, title:'提示'}); }
+            else{ layer.alert(data.msg, {icon:2, title:'提示'}); }
+        },
+        dataType:'json'
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线充值 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260221-pay">
+    <link rel="stylesheet" href="/static/cdn/layer/2.2/skin/default/layer.css">
+    <style>
+    .uc-wrap { max-width: 640px; margin: 32px auto; padding: 0 20px; }
+    .uc-page-title { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .uc-page-title a { font-size: 14px; font-weight: 500; color: var(--primary); }
+    .pay-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--gray-100); margin-bottom: 20px; }
+    .pay-label { font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 10px; }
+    .pay-input { width: 100%; height: 48px; padding: 0 16px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 16px; color: var(--gray-800); background: #fff; }
+    .pay-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .pay-input::placeholder { color: var(--gray-400); }
+    .pay-methods { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .pay-method { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border: 2px solid var(--gray-200); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; background: #fff; flex: 1; min-width: 140px; }
+    .pay-method:hover { border-color: var(--primary-light); }
+    .pay-method.active { border-color: var(--primary); background: rgba(37,99,235,.04); }
+    .pay-method-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .pay-method-name { font-size: 14px; font-weight: 500; color: var(--gray-700); }
+    .pay-submit { width: 100%; height: 48px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 24px; }
+    .pay-submit:hover { background: var(--primary-dark); }
+    .pay-give-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    .pay-give-table th { background: var(--gray-50); padding: 10px 12px; text-align: left; font-weight: 600; color: var(--gray-600); border-bottom: 1px solid var(--gray-200); }
+    .pay-give-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); }
+    </style>
+</head>
+<body>
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+            <a href="{:url('User/uscenter')}">个人中心</a>
+        </nav>
+        <div class="mod-user-link">
+            <a href="{:url('User/logout')}">退出登录</a>
+        </div>
+    </div>
+</header>
+
+<div class="uc-wrap">
+    <div class="uc-page-title">
+        💳 在线充值
+        <a href="{:url('User/uscenter')}">← 返回个人中心</a>
+    </div>
+
+    <div class="pay-card">
+        <form method="post" {if condition="isIE() eq 0"}target="_blank" {/if} action="" id="formreq">
+            <input type="hidden" name="p2_Order" id="p2_Order">
+            <input type="hidden" name="p5_Pid" id="p5_Pid">
+            <input type="hidden" name="pd_FrpId" id="pd_FrpId">
+
+            <div class="pay-label">充值金额（元）</div>
+            <input type="number" step="1" class="pay-input" placeholder="请输入充值金额" id="pay_money" name="p3_Amt">
+
+            <div class="pay-label" style="margin-top:20px;">支付方式</div>
+            <div class="pay-methods" id="zhifutype">
+                {if condition="config('blfk_pay_alipay') neq '0'"}
+                <div class="pay-method active" data-type="alipay">
+                    <div class="pay-method-icon">💙</div>
+                    <div class="pay-method-name">支付宝</div>
+                </div>
+                {/if}
+                {if condition="config('blfk_pay_wxpay') neq '0'"}
+                <div class="pay-method" data-type="wxpay">
+                    <div class="pay-method-icon">💚</div>
+                    <div class="pay-method-name">微信支付</div>
+                </div>
+                {/if}
+                {if condition="config('blfk_pay_qqpay') neq '0'"}
+                <div class="pay-method" data-type="qqpay">
+                    <div class="pay-method-icon">🔵</div>
+                    <div class="pay-method-name">QQ支付</div>
+                </div>
+                {/if}
+                {if condition="config('blfk_pay_unionPay') neq '0'"}
+                <div class="pay-method" data-type="unionPay">
+                    <div class="pay-method-icon">🔴</div>
+                    <div class="pay-method-name">银联支付</div>
+                </div>
+                {/if}
+            </div>
+
+            <button type="button" class="pay-submit js_confirm_pay">确定充值</button>
+        </form>
+    </div>
+
+    {if condition="count($givelist) neq 0"}
+    <div class="pay-card">
+        <div class="pay-label">充值优惠</div>
+        <table class="pay-give-table">
+            <thead>
+                <tr>
+                    <th>充值金额大于（元）</th>
+                    <th>赠送类型</th>
+                    <th>赠送数量</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="$givelist" id="v"}
+                <tr>
+                    <td>{$v.paymoney}</td>
+                    {if condition="$v.paytype eq 0"}
+                    <td>单笔赠送</td>
+                    <td>{$v.givemoney}元</td>
+                    {else/}
+                    <td>按比例赠送</td>
+                    <td>充值金额的{$v.givemoney}%</td>
+                    {/if}
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+    {/if}
+</div>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script src="/static/cdn/layer/2.2/layer.js"></script>
+<script>
+function randomNum(n) {
+    var t = '';
+    for(var i = 0; i < n; i++) { t += Math.floor(Math.random() * 10); }
+    return t;
+}
+
+$('.pay-method').click(function(){
+    $('.pay-method').removeClass('active');
+    $(this).addClass('active');
+});
+
+$('.js_confirm_pay').click(function(){
+    var pay_money = $.trim($('#pay_money').val());
+    Date.prototype.format = function(format) {
+        var args = {"M+": this.getMonth()+1,"d+": this.getDate(),"h+": this.getHours(),"m+": this.getMinutes(),"s+": this.getSeconds()};
+        if(/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4-RegExp.$1.length));
+        for(var i in args) { var n=args[i]; if(new RegExp("("+i+")").test(format)) format=format.replace(RegExp.$1, RegExp.$1.length==1?n:("00"+n).substr((""+n).length)); }
+        return format;
+    };
+    var order = new Date().format("yyyyMMddhhmmss") + randomNum(10);
+    $("#p2_Order").val(order);
+    $("#p5_Pid").val("{:session('useraccount.id')}");
+
+    if(pay_money < 0.01){
+        layer.tips("充值金额不能小于1元",'#pay_money',{tips:[1,'#2987e6'],time:4000});
+        return false;
+    }
+
+    var nowType = $(".pay-method.active").data("type");
+    if(!nowType){
+        layer.msg("请选择支付方式",{icon:0,time:2000});
+        return false;
+    }
+    $("#pd_FrpId").val(nowType);
+    var maddtype=5;
+    if(nowType=='alipay') maddtype=2;
+    else if(nowType=='wxpay') maddtype=3;
+    else if(nowType=='unionPay') maddtype=4;
+    else if(nowType=='qqpay') maddtype=6;
+    else if(nowType=='tenpay') maddtype=7;
+
+    layer.load();
+    document.getElementById("formreq").action = "{:url('pay/index/reqPay')}";
+
+    $.when(AddPayOrder(order,maddtype,pay_money)).done(function(res){
+        if(res.code==1){
+            $("#formreq").submit();
+            layer.closeAll('loading');
+        }else{
+            layer.closeAll('loading');
+            layer.alert('数据异常', function(index){ location.reload(false); });
+        }
+    });
+});
+
+$("#pay_money").on("input propertychange",function(){
+    if($(this).val().indexOf(".")!="-1"){
+        $(this).val($(this).val().split(".")[0]);
+    }
+});
+
+function AddPayOrder(order,maddtype,order_cash){
+    var defer = $.Deferred();
+    $.ajax({
+        url:"{:url('jingdian/api/AddPayOrder')}",
+        type:'post',dataType:'json',async:true,
+        data:{order:order,paytype:maddtype,money:order_cash},
+        success:function(data){ defer.resolve(data); }
+    });
+    return defer;
+}
+</script>
+</body>
+</html>

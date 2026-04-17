@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡密信息 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260221-mail">
+    <style>
+    .mail-wrap { max-width: 720px; margin: 32px auto; padding: 0 20px; }
+    .mail-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--gray-100); overflow: hidden; }
+    .mail-header { background: linear-gradient(135deg, #059669, #10b981); color: #fff; padding: 24px 28px; }
+    .mail-header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .mail-header-sub { font-size: 13px; opacity: .85; margin-top: 6px; }
+    .mail-actions { display: flex; gap: 10px; padding: 20px 28px; border-bottom: 1px solid var(--gray-100); flex-wrap: wrap; }
+    .mail-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; border: 1.5px solid var(--gray-200); background: #fff; color: var(--gray-700); text-decoration: none; }
+    .mail-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0f7ff; }
+    .mail-btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .mail-btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); color: #fff; }
+    .mail-btn svg { width: 16px; height: 16px; }
+    .mail-content { padding: 24px 28px; min-height: 120px; }
+    .mail-content-text { font-size: 14px; line-height: 1.8; color: var(--gray-800); word-break: break-all; white-space: pre-wrap; }
+    .mail-content-text img { max-width: 50%; height: auto; border-radius: 6px; margin: 4px; }
+    .mail-footer { padding: 16px 28px; background: var(--gray-50); border-top: 1px solid var(--gray-100); display: flex; justify-content: center; }
+    .mail-footer a { font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 500; }
+    .mail-footer a:hover { text-decoration: underline; }
+    .copy-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #059669; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; z-index: 9999; display: none; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    @media (max-width: 640px) {
+        .mail-wrap { margin: 16px auto; }
+        .mail-actions { gap: 8px; }
+        .mail-btn { padding: 8px 14px; font-size: 12px; }
+        .mail-content { padding: 16px 20px; }
+        .mail-content-text img { max-width: 80%; }
+    }
+    </style>
+</head>
+<body>
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+        </nav>
+    </div>
+</header>
+
+<div class="mail-wrap">
+    <div class="mail-card">
+        <div class="mail-header">
+            <div class="mail-header-title">
+                🔑 卡密信息
+            </div>
+            <div class="mail-header-sub">
+                订单编号：{$Order['data']['data_card']['mcard']} &nbsp;|&nbsp; 数量：{$Order['data']['canbuynum']}×{$Order['data']['sendbeishu']}={$Order['data']['canbuynum']*$Order['data']['sendbeishu']}个
+            </div>
+        </div>
+
+        <div class="mail-actions">
+            <a class="mail-btn" onclick="download('{$Order['data']['data_card']['mcard']}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                保存本地
+            </a>
+            <a class="mail-btn mail-btn-primary" id="copyBtn" onclick="copyKami()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                复制卡密
+            </a>
+            <a class="mail-btn" onclick="viewKami()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                查看卡密
+            </a>
+        </div>
+
+        <div class="mail-content">
+            <div class="mail-content-text" id="kamiText">
+                {$html|htmlspecialchars_decode}
+            </div>
+        </div>
+
+        <div class="mail-footer">
+            <a href="{:config('is_https')}://{$_SERVER['HTTP_HOST']}">← 返回首页</a>
+        </div>
+    </div>
+</div>
+
+<div class="copy-toast" id="copyToast">✅ 卡密已复制到剪贴板</div>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script>
+function download(order) {
+    location.href = "{:url('Index/dc')}" + "?order=" + order;
+}
+
+function viewKami() {
+    var el = document.getElementById('kamiText');
+    if (el.style.display === 'none') {
+        el.style.display = '';
+    }
+    el.scrollIntoView({behavior: 'smooth'});
+}
+
+function copyKami() {
+    var el = document.getElementById('kamiText');
+    var text = el.innerText || el.textContent;
+    text = text.replace(/^\s+|\s+$/g, '');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+            showToast();
+        }).catch(function() {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand('copy');
+        showToast();
+    } catch(e) {
+        alert('复制失败，请手动复制');
+    }
+    document.body.removeChild(ta);
+}
+
+function showToast() {
+    var t = document.getElementById('copyToast');
+    t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 2000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{extend name="public/layout" /}
+{block name="content"}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px;margin-bottom:10px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+.g-info-panel{background:#fff;border-radius:6px;border:1px solid #e8e8e8;margin-bottom:10px}
+.g-info-head{padding:10px 16px;font-size:13px;font-weight:600;border-bottom:1px solid #e8e8e8;color:#3b82f6}
+.g-info-body{padding:12px 16px}
+.g-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g-card{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:14px 18px}
+.g-card h5{font-size:12px;color:#64748b;margin:0 0 6px}
+.g-card .g-val{font-size:18px;font-weight:700;color:#1e293b;margin:0}
+.copy-btn{cursor:pointer;color:#2563eb;margin-left:5px}.copy-btn:hover{color:#1d4ed8}
+.toggle-secret{cursor:pointer;color:#676a6c;margin-left:10px}.toggle-secret:hover{color:#2563eb}
+.secret-text,.secret-full{display:inline-block}
+.form-control-static{min-height:34px;padding-top:7px}
+@media(max-width:768px){.g-dash{grid-template-columns:repeat(2,1fr)}}
+</style>
+{/literal}
+<div class="g-page">
+
+<div class="g-form-wrap">
+    <div class="g-form-title">
+        <span>编辑API秘钥</span>
+        <a class="btn btn-default btn-sm" href="{:url('index')}"><i class="fa fa-arrow-left"></i> 返回列表</a>
+    </div>
+    <form class="form-horizontal" id="apikey-form">
+        <input type="hidden" name="id" value="{$apikey.id}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">AppID：</label>
+            <div class="col-sm-6">
+                <div class="form-control-static">
+                    <code>{$apikey.app_id}</code>
+                    <i class="fa fa-copy copy-btn" data-clipboard-text="{$apikey.app_id}" title="复制AppID"></i>
+                </div>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>AppID创建后不可修改</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">AppSecret：</label>
+            <div class="col-sm-6">
+                <div class="form-control-static">
+                    <span class="secret-text">******</span>
+                    <span class="secret-full" style="display:none;">
+                        <code>{$apikey.app_secret}</code>
+                        <i class="fa fa-copy copy-btn" data-clipboard-text="{$apikey.app_secret}" title="复制AppSecret"></i>
+                    </span>
+                    <i class="fa fa-eye toggle-secret" title="显示/隐藏秘钥"></i>
+                    <button type="button" class="btn btn-xs btn-warning" onclick="regenerateSecret()"><i class="fa fa-refresh"></i> 重新生成</button>
+                </div>
+                <div class="g-hint"><i class="fa fa-warning" style="color:#d97706"></i>重新生成后，原秘钥将立即失效</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span class="text-danger">*</span> 应用名称：</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="app_name" value="{$apikey.app_name}" placeholder="请输入应用名称" required>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>应用的唯一标识名称，2-50个字符</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述：</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="description" rows="3" placeholder="请输入应用描述（可选）">{$apikey.description}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>应用的详细说明，最多200个字符</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">IP白名单：</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="allowed_ips" rows="2" placeholder="请输入允许访问的IP地址，多个IP用逗号分隔（可选）">{$apikey.allowed_ips}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>留空表示不限制IP，多个IP用英文逗号分隔</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">每日调用限制：</label>
+            <div class="col-sm-6">
+                <input type="number" class="form-control" name="daily_limit" value="{$apikey.daily_limit|default=0}" min="0" placeholder="0表示不限制">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>每日最大调用次数，0表示不限制</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">状态：</label>
+            <div class="col-sm-6">
+                <div class="radio-inline"><label><input type="radio" name="status" value="1" {if $apikey.status == 1}checked{/if}> 启用</label></div>
+                <div class="radio-inline"><label><input type="radio" name="status" value="0" {if $apikey.status == 0}checked{/if}> 停用</label></div>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>停用后，该API秘钥将无法调用任何接口</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存修改</button>
+                <a class="btn btn-default" href="{:url('index')}"><i class="fa fa-times"></i> 取消</a>
+                <a class="btn btn-info" href="{:url('stats', ['id' => $apikey.id])}"><i class="fa fa-bar-chart"></i> 查看统计</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="g-info-panel">
+    <div class="g-info-head"><i class="fa fa-bar-chart"></i> 使用情况</div>
+    <div class="g-info-body">
+        <div class="g-dash">
+            <div class="g-card"><h5>创建时间</h5><p class="g-val">{$apikey.create_time|date='Y-m-d',###}</p></div>
+            <div class="g-card"><h5>最后使用</h5><p class="g-val">{if $apikey.last_used_time > 0}{$apikey.last_used_time|date='m-d H:i',###}{else}从未{/if}</p></div>
+            <div class="g-card"><h5>当前状态</h5><p class="g-val">{if $apikey.status == 1}正常{else}停用{/if}</p></div>
+            <div class="g-card"><h5>IP限制</h5><p class="g-val">{if empty($apikey.allowed_ips)}无限制{else}已设置{/if}</p></div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script src="https:/static/cdn/clipboard/2/dist/clipboard.min.js"></script>
+<script>
+new ClipboardJS('.copy-btn').on('success', function(e){ layer.msg('复制成功',{icon:1,time:1000}); e.clearSelection(); });
+
+$(document).on('click', '.toggle-secret', function(){
+    var $p=$(this).parent(), $t=$p.find('.secret-text'), $f=$p.find('.secret-full');
+    if($t.is(':visible')){ $t.hide();$f.show();$(this).removeClass('fa-eye').addClass('fa-eye-slash'); }
+    else{ $t.show();$f.hide();$(this).removeClass('fa-eye-slash').addClass('fa-eye'); }
+});
+
+$('#apikey-form').on('submit', function(e){
+    e.preventDefault();
+    var formData=$(this).serialize();
+    $.ajax({
+        url:'{:url("edit")}', type:'POST', data:formData, dataType:'json',
+        beforeSend:function(){ $('button[type="submit"]').prop('disabled',true).html('<i class="fa fa-spinner fa-spin"></i> 保存中...'); },
+        success:function(res){
+            if(res.code==1){ layer.msg(res.msg,{icon:1}); setTimeout(function(){window.location.href='{:url("index")}';},1000); }
+            else{ layer.msg(res.msg,{icon:2}); }
+        },
+        error:function(){ layer.msg('网络错误，请稍后重试',{icon:2}); },
+        complete:function(){ $('button[type="submit"]').prop('disabled',false).html('<i class="fa fa-save"></i> 保存修改'); }
+    });
+});
+
+function regenerateSecret(){
+    layer.confirm('重新生成秘钥后，原秘钥将立即失效，所有使用该秘钥的应用都需要更新，确定继续吗？', {btn:['确定','取消'],icon:3}, function(index){
+        $.post('{:url("regenerate")}', {id:{$apikey.id}}, function(res){
+            if(res.code==1){
+                layer.alert('新秘钥已生成：<br><br><code style="font-size:14px;">'+res.data+'</code><br><br>请立即复制保存！', {title:'秘钥重新生成成功',btn:['确定并刷新'],yes:function(){location.reload();}});
+            }else{ layer.msg(res.msg,{icon:2}); }
+        });
+        layer.close(index);
+    });
+}
+
+$('input[name="app_name"]').on('blur', function(){ var v=$(this).val().trim(); if(v.length<2||v.length>50) layer.tips('应用名称长度必须在2-50个字符之间',this,{tips:1}); });
+$('textarea[name="description"]').on('input', function(){ if($(this).val().length>200) layer.tips('描述长度不能超过200个字符',this,{tips:1}); });
+$('input[name="daily_limit"]').on('change', function(){ if(parseInt($(this).val())<0){ $(this).val(0); layer.tips('每日调用限制不能为负数',this,{tips:1}); } });
+</script>
+{/block}

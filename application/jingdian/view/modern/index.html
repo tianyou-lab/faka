@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{:config('shop_name')} - {:config('web_name')}</title>
+    <meta name="keywords" content="{:config('web_site_keyword')}">
+    <meta name="description" content="{:config('web_site_description')}">
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260220-nav2">
+    <link rel="stylesheet" href="/static/cdn/layer/2.2/skin/default/layer.css">
+</head>
+<body onload="Init();">
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            {volist name="navigation" id="nv"}
+            <a href="{$nv['link_url']}" {if condition="$nv['opentype'] eq 1"}target="_blank"{/if}>{$nv['title']}</a>
+            {/volist}
+        </nav>
+        <div class="mod-search">
+            <span class="mod-search-icon">🔍</span>
+            <input type="text" id="orderid_input" placeholder="输入订单号查询">
+            <button class="mod-search-btn" onclick="orderQuery()">查询</button>
+        </div>
+        {if condition="config('web_reg_type') neq 0"}
+        <div class="mod-user-link">
+            {if condition="session('useraccount.account') neq null"}
+            <a href="{:url('User/uscenter')}">{:session('useraccount.account')}</a>
+            {else/}
+            <a href="{:url('User/index')}">登录/注册</a>
+            {/if}
+        </div>
+        {/if}
+    </div>
+</header>
+
+<div class="container" style="margin-top:20px;">
+    {if condition="count($GongGao) gt 0 && !empty($GongGao[0]['content'])"}
+    <div class="mod-announce">
+        <span>📢</span>
+        <span>{:strip_tags(htmlspecialchars_decode($GongGao[0]['content']))}</span>
+    </div>
+    {/if}
+
+    <div class="mod-category-nav">
+        {volist name="GoodsListAll" id="vo" key="keyfloor"}
+        {if condition="count($vo['hehe']) neq 0"}
+        <a href="javascript:;" class="mod-cat-tab{if condition='$keyfloor eq 1'} active{/if}" data-cat="cat-{$keyfloor}">{:htmlspecialchars_decode($vo['name'])}</a>
+        {/if}
+        {/volist}
+    </div>
+
+    {volist name="GoodsListAll" id="vo" key="keyfloor"}
+    {if condition="count($vo['hehe']) neq 0"}
+    <div class="mod-goods-list mod-cat-panel{if condition='$keyfloor neq 1'} is-hidden{/if}" data-cat="cat-{$keyfloor}">
+        <div class="mod-section-title">
+            <h2>{:htmlspecialchars_decode($vo['name'])}</h2>
+            <span class="mod-badge">{:count($vo['hehe'])} 件商品</span>
+        </div>
+
+        <div class="mod-goods-grid">
+            {volist name="vo['hehe']" id="f"}
+            <div class="mod-goods-card">
+                <img class="mod-goods-img" src="{$f['webimgurl']}" alt="{:strip_tags(htmlspecialchars_decode($f['mname']))}" onerror="this.src='/static/admin/images/head_default.gif'">
+                <div class="mod-goods-body">
+                    <div class="mod-goods-name">
+                        {if condition="$f['type'] eq 0"}
+                        <span class="mod-goods-item-tag mod-tag-auto">自动</span>
+                        {else/}
+                        <span class="mod-goods-item-tag mod-tag-manual">手动</span>
+                        {/if}
+                        {:htmlspecialchars_decode($f['mname'])}
+                    </div>
+                    {if condition="$f['mnotice'] neq ''"}
+                    <div class="mod-goods-desc">{:strip_tags(htmlspecialchars_decode($f['mnotice']))}</div>
+                    {/if}
+                    <div class="mod-goods-footer">
+                        <span class="mod-goods-price">
+                            <small>¥</small>{if condition="$f.mprice lt 1"}{:number_format($f.mprice/100,4)}{else/}{:number_format($f.mprice/100,2)}{/if}
+                        </span>
+                        <div class="mod-goods-meta">
+                            <span class="mod-goods-stock {if condition='$f.count eq 0'}out{elseif condition='$f.count lt 10'}low{/if}">
+                                {if condition="$f.count gt 50"}库存充足{elseif condition="$f.count gt 10"}库存紧张{elseif condition="$f.count gt 0"}库存紧张{else/}缺货{/if}
+                            </span>
+                            <span>已售 ***</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <form method="post" action="{:url('Index/zywlpay')}" id="form{$f.id}" target="_blank">
+                            <input type="hidden" name="mpid" value="{$f.id}">
+                            <input type="hidden" name="countnum" value="{$f.count}">
+                            <input type="hidden" name="mmin" value="{$f.mmin}">
+                            <input type="hidden" name="mmax" value="{$f.mmax}">
+                            <input type="hidden" name="mname" value="{:strip_tags(htmlspecialchars_decode($f['mname']))}">
+                            <input type="hidden" name="mprice" value="{$f.mprice}">
+                            <input type="hidden" name="sendbeishu" value="{$f.sendbeishu}">
+                            <input type="hidden" name="attachgroupid" value="{$f.attachgroupid}">
+                            <input type="hidden" name="mnotice" value="{:strip_tags(htmlspecialchars_decode($f['mnotice']))}">
+                            <input type="hidden" name="mimgurl" value="{$f['webimgurl']}">
+                            <input type="hidden" name="xqnotice" value="{:strip_tags(htmlspecialchars_decode($f['xqnotice']))}">
+                            <input type="hidden" name="mtype" value="{$f.type}">
+                            {if condition="$f.count gt 0"}
+                            <button type="button" name="buyok" class="mod-goods-btn" style="width:100%;">立即购买</button>
+                            {else/}
+                            <button type="button" class="mod-goods-btn disabled" style="width:100%;" disabled>暂无库存</button>
+                            {/if}
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+    {/if}
+    {/volist}
+
+</div>
+
+<footer class="mod-footer">
+    <div class="container">
+        <p><a href="https://beian.miit.gov.cn/" target="_blank">{:config('web_site_icp')}</a> {:config('web_site_copy')}</p>
+        <p style="margin-top:4px;">{:config('web_site_cnzz')}</p>
+    </div>
+</footer>
+
+<div id="gg" style="display:none;overflow:auto;padding:8px;">
+    {if condition="count($GongGao) gt 0"}{$GongGao[0]['content']}{/if}
+</div>
+
+<div id="popupContactTpl" style="display:none;">
+{if condition="session('useraccount.account') eq null"}
+<div class="mod-order-popup-section">
+    <div class="mod-order-popup-contact">
+        <span class="mod-order-popup-contact-label"><em>*</em>联系方式</span>
+        <input type="text" class="mod-order-popup-contact-input" placeholder="请输入联系方式方便查询订单" maxlength="30">
+    </div>
+    <div class="mod-order-popup-contact-hint">【建议】填写手机号,如填邮箱,卡密将同时发送至邮箱。</div>
+</div>
+{/if}
+</div>
+
+<div id="popupPayTpl" style="display:none;">
+<div class="mod-order-popup-paylist">
+    {if condition="config('blfk_pay_alipay') neq '0'"}<label class="mod-order-popup-pay" data-pay="alipay"><div class="mod-order-popup-pay-icon" style="background:#1677ff;color:#fff;">支</div><span>支付宝</span></label>{/if}
+    {if condition="config('blfk_pay_wxpay') neq '0'"}<label class="mod-order-popup-pay" data-pay="wxpay"><div class="mod-order-popup-pay-icon" style="background:#07c160;color:#fff;">微</div><span>微信支付</span></label>{/if}
+    {if condition="config('blfk_pay_qqpay') neq '0'"}<label class="mod-order-popup-pay" data-pay="qqpay"><div class="mod-order-popup-pay-icon" style="background:#12b7f5;color:#fff;">Q</div><span>QQ钱包</span></label>{/if}
+    {if condition="config('blfk_pay_unionPay') neq '0'"}<label class="mod-order-popup-pay" data-pay="unionPay"><div class="mod-order-popup-pay-icon" style="background:#e60012;color:#fff;">聚</div><span>聚合支付</span></label>{/if}
+    {if condition="config('blfk_pay_tenpay') neq '0'"}<label class="mod-order-popup-pay" data-pay="tenpay"><div class="mod-order-popup-pay-icon" style="background:#f90;color:#fff;">财</div><span>财付通</span></label>{/if}
+</div>
+</div>
+
+<div id="popupNeedContact" style="display:none;">{if condition="session('useraccount.account') eq null"}1{else/}0{/if}</div>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script src="/static/cdn/layer/2.2/layer.js"></script>
+<script>
+function orderQuery() {
+    var val = $('#orderid_input').val();
+    if(val) window.location.href = '{:url("Index/selectorder")}' + '?key=' + val;
+}
+$('#orderid_input').on('keydown', function(e){ if(e.keyCode===13) orderQuery(); });
+
+// 分类导航切换
+$('.mod-cat-tab').click(function(){
+    $('.mod-cat-tab').removeClass('active');
+    $(this).addClass('active');
+    var cat = $(this).data('cat');
+    $('.mod-cat-panel').hide();
+    $('.mod-cat-panel[data-cat="'+cat+'"]').show();
+});
+
+$(function(){
+    $('[name=buyok]').click(function(){
+        var $form = $(this).closest('form');
+        var countnum = parseInt($form.find('input[name=countnum]').val()) || 0;
+        var mpid = $form.find('input[name=mpid]').val();
+        var mname = $form.find('input[name=mname]').val();
+        var mprice = parseFloat($form.find('input[name=mprice]').val()) || 0;
+        var mmin = parseInt($form.find('input[name=mmin]').val()) || 1;
+        var mmax = parseInt($form.find('input[name=mmax]').val()) || 10;
+        var sendbeishu = parseInt($form.find('input[name=sendbeishu]').val()) || 1;
+        var mnotice = $form.find('input[name=mnotice]').val() || '';
+        var mtype = parseInt($form.find('input[name=mtype]').val()) || 0;
+        var mimgurl = $form.find('input[name=mimgurl]').val() || '';
+        var xqnotice = $form.find('input[name=xqnotice]').val() || '';
+        if(countnum <= 0){
+            layer.msg('暂无库存，请联系客服', {icon: 2});
+            return false;
+        }
+        if(mmax > Math.floor(countnum / sendbeishu)) mmax = Math.floor(countnum / sendbeishu);
+        if(mmax < 1) mmax = 1;
+        if(mmin < 1) mmin = 1;
+        var unitPrice = mprice / 100;
+        var typeTag = mtype == 0 ? '<span class="mod-popup-tag mod-tag-auto">自动发货</span>' : '<span class="mod-popup-tag mod-tag-manual">手动发货</span>';
+        var minTag = '<span class="mod-popup-tag mod-popup-tag-info">' + mmin + '件起购</span>';
+
+        var html = '<div class="mod-order-popup">'
+            + '<div class="mod-order-popup-header" style="display:flex;gap:14px;align-items:flex-start;">'
+            + (mimgurl ? '<img src="' + mimgurl + '" onerror="this.src=\'/static/admin/images/head_default.gif\'" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#f3f4f6;">' : '')
+            + '<div style="flex:1;min-width:0;">'
+            + '<div class="mod-order-popup-title">' + mname + '<span class="mod-order-popup-qty-badge">x<span id="popupQtyBadge">' + mmin + '</span></span></div>'
+            + (mnotice ? '<div class="mod-order-popup-desc" style="margin-top:4px;">' + mnotice + '</div>' : '')
+            + '</div>'
+            + '</div>'
+            + (xqnotice ? '<div style="font-size:12px;color:#6b7280;line-height:1.6;padding:10px 0;border-top:1px solid #f3f4f6;margin-top:10px;max-height:80px;overflow:auto;">' + xqnotice + '</div>' : '')
+            + '<div class="mod-order-popup-tags">' + typeTag + minTag + '</div>'
+            + '<div class="mod-order-popup-section">'
+            + '<div class="mod-order-popup-price-row">'
+            + '<span class="mod-order-popup-price">¥<b id="popupTotalPrice">' + (unitPrice * mmin).toFixed(2) + '</b></span>'
+            + '<div class="mod-buy-popup-stepper">'
+            + '<button type="button" class="mod-qty-minus">−</button>'
+            + '<input type="number" id="buyQtyInput" value="' + mmin + '" min="' + mmin + '" max="' + mmax + '" class="mod-qty-input">'
+            + '<button type="button" class="mod-qty-plus">+</button>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + $('#popupContactTpl').html()
+            + '<div class="mod-order-popup-section">'
+            + $('#popupPayTpl').html()
+            + '</div>'
+            + '</div>';
+
+        var popupW = window.innerWidth < 500 ? (window.innerWidth - 24) + 'px' : '460px';
+        var popupIdx = layer.open({
+            type: 1,
+            title: '订单确认',
+            area: [popupW, 'auto'],
+            maxHeight: window.innerHeight * 0.85,
+            shadeClose: true,
+            content: html,
+            btn: ['取消', '去支付'],
+            btnAlign: 'r',
+            btn2: function(idx){
+                doPopupPay(idx, mpid, unitPrice, mmin, mmax);
+                return false;
+            }
+        });
+        // 默认选中第一个支付方式
+        $('.layui-layer-content .mod-order-popup-pay:first').addClass('selected');
+        // 支付方式点击
+        $(document).off('click','.mod-order-popup-pay').on('click','.mod-order-popup-pay',function(){
+            $('.mod-order-popup-pay').removeClass('selected');
+            $(this).addClass('selected');
+        });
+        // 数量加减
+        function updatePopupPrice(){
+            var v = parseInt($('#buyQtyInput').val()) || mmin;
+            $('#popupTotalPrice').text((unitPrice * v).toFixed(2));
+            $('#popupQtyBadge').text(v);
+        }
+        $(document).off('click','.mod-qty-minus').on('click','.mod-qty-minus',function(){
+            var $inp = $('#buyQtyInput');
+            var v = parseInt($inp.val()) - 1;
+            if(v < mmin) v = mmin;
+            $inp.val(v);
+            updatePopupPrice();
+        });
+        $(document).off('click','.mod-qty-plus').on('click','.mod-qty-plus',function(){
+            var $inp = $('#buyQtyInput');
+            var v = parseInt($inp.val()) + 1;
+            if(v > mmax) v = mmax;
+            $inp.val(v);
+            updatePopupPrice();
+        });
+        $(document).off('input','#buyQtyInput').on('input','#buyQtyInput',function(){
+            var v = parseInt($(this).val()) || mmin;
+            if(v < mmin) v = mmin;
+            if(v > mmax) v = mmax;
+            updatePopupPrice();
+        });
+    });
+});
+
+function getOrderNo(){
+    var d = new Date();
+    var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+    var t = ''+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
+    for(var i=0;i<10;i++) t += Math.floor(Math.random()*10);
+    return t;
+}
+
+function doPopupPay(layerIdx, mpid, unitPrice, mmin, mmax){
+    var qty = parseInt($('#buyQtyInput').val()) || mmin;
+    if(qty < mmin) qty = mmin;
+    if(qty > mmax) qty = mmax;
+    var money = (unitPrice * qty).toFixed(2);
+    var $payEl = $('.mod-order-popup-pay.selected');
+    if(!$payEl.length){
+        layer.msg('请选择支付方式'); return;
+    }
+    var payId = $payEl.data('pay');
+    var maddtype = 5;
+    if(payId=='alipay') maddtype=2;
+    else if(payId=='wxpay') maddtype=3;
+    else if(payId=='unionPay') maddtype=4;
+    else if(payId=='qqpay') maddtype=6;
+    else if(payId=='tenpay') maddtype=7;
+
+    var needContact = $.trim($('#popupNeedContact').text()) === '1';
+    var contact = '';
+    if(needContact){
+        contact = $.trim($('.layui-layer-content .mod-order-popup-contact-input').val());
+        if(!contact || !/^[\d\w@.\-]+$/.test(contact)){
+            layer.msg('请填写正确的联系方式'); return;
+        }
+    }
+
+    if(parseFloat(money) < 0.01){
+        layer.msg('购买金额不能低于0.01'); return;
+    }
+
+    var orderno = getOrderNo();
+    var loadIdx = layer.load(0, {shade:[0.4,'#fff']});
+    var payUrl = "{:url('pay/index/reqPay')}";
+
+    $.getJSON("{:url('@jingdian/Api/AddOrder')}",
+        {'mcard':orderno,'lianxi':contact,'email':'','mflid':mpid,'buynum':qty,'maddtype':maddtype,'mamount':money},
+        function(res){
+            if(res.code != 1){
+                layer.close(loadIdx);
+                layer.alert('下单失败：' + (res.msg||'请重试'));
+                return;
+            }
+            var $payForm = $('<form method="post" target="_blank"></form>');
+            $payForm.attr('action', payUrl);
+            $payForm.append('<input type="hidden" name="p2_Order" value="'+orderno+'">');
+            $payForm.append('<input type="hidden" name="p3_Amt" value="'+money+'">');
+            $payForm.append('<input type="hidden" name="p5_Pid" value="'+mpid+'">');
+            $payForm.append('<input type="hidden" name="pd_FrpId" value="'+payId+'">');
+            $payForm.append('<input type="hidden" name="buynum" value="'+qty+'">');
+            $payForm.appendTo('body');
+            $payForm.submit();
+            $payForm.remove();
+            layer.close(loadIdx);
+            layer.close(layerIdx);
+        }
+    );
+}
+
+function Init() {
+    var tangg = Number("{:config('tangg')}");
+    var tanggcookie = Number("{:empty(cookie('tangg'))?0:cookie('tangg')}");
+    if(tangg == 1 && tanggcookie != 1){
+        layer.ready(function(){
+            layer.open({
+                type: 1,
+                offset: 't',
+                content: $('#gg'),
+                area: ['auto', 'auto'],
+                title: "商户公告",
+                btn: '关闭公告',
+                btnAlign: 'c',
+                shadeClose: true,
+                shade: [0.8, '#393D49'],
+                yes: function(){ layer.closeAll(); }
+            });
+        });
+        document.cookie = 'tangg=1; max-age=' + Number("{:config('tanggjiange')}") + '; path=/';
+    }
+
+    var weiyong = Number("{$param['count']}");
+    if(weiyong > 0){
+        layer.msg('您有未提取订单，请点击右上角订单查询', {icon: 7, anim: 6});
+    }
+}
+
+</script>
+<div style="position:fixed;left:10px;bottom:100px;z-index:100;width:110px;">{:config('web_music')}</div>
+</body>
+</html>

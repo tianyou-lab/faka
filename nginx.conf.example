@@ -1,0 +1,8 @@
+location ~ /(application|data|extend|install|rule|runtime|sldate|thinkphp|static|upload|uploadintegral|uploads|vendor)/.*.(php|php5|phtml|json)$ {
+		rewrite ^/(.*)$ /waf.php?wafhtml=1 last;
+}
+location / {
+	if (!-e $request_filename){
+		rewrite  ^(.*)$  /index.php?s=$1  last;   break;
+	}
+}

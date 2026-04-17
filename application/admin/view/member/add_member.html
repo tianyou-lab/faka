@@ -1,0 +1,136 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/style.css">
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.file-item{float:left;position:relative;width:110px;height:110px;margin:0 20px 20px 0;padding:4px}
+.file-item .info{overflow:hidden}
+.uploader-list{width:100%;overflow:hidden}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">添加会员</div>
+    <form class="form-horizontal" name="add_member" id="add_member" method="post" action="{:url('add_member')}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">账号：</label>
+            <div class="input-group col-sm-4">
+                <input id="account" type="text" class="form-control" name="account" placeholder="请输入账号">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">密码：</label>
+            <div class="input-group col-sm-4">
+                <input id="password" type="password" class="form-control" name="password" placeholder="请输入密码">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">会员组：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control m-b chosen-select" name="group_id" id="group_id">
+                    <option value="">==请选择会员组==</option>
+                    {if !empty($group)}
+                        {foreach name="group" item="vo"}
+                            <option value="{$vo.id}">{$vo.group_name}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">电话：</label>
+            <div class="input-group col-sm-4">
+                <input id="mobile" type="number" class="form-control" name="mobile" placeholder="请输入会员电话">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">积分：</label>
+            <div class="input-group col-sm-4">
+                <input id="integral" type="number" class="form-control" name="integral">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">余额：</label>
+            <div class="input-group col-sm-4">
+                <input id="money" type="number" class="form-control" name="money">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript" src="/static/admin/webupload/webuploader.min.js"></script>
+<script type="text/javascript">
+var $list = $('#fileList');
+var uploader = WebUploader.create({
+    auto: true,
+    swf: '/static/admin/webupload/Uploader.swf',
+    server: "{:url('Upload/uploadface')}",
+    duplicate: true,
+    pick: '#imgPicker',
+    accept: {
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,bmp,png',
+        mimeTypes: 'image/jpg,image/jpeg,image/png'
+    },
+    'onUploadSuccess': function(file, data, response) {
+        $("#data_photo").val(data._raw);
+        $("#img_data").attr('src', '/uploads/face/' + data._raw).show();
+    }
+});
+uploader.on('fileQueued', function(file) {
+    $list.html('<div id="' + file.id + '" class="item"><h4 class="info">' + file.name + '</h4><p class="state">正在上传...</p></div>');
+});
+uploader.on('uploadSuccess', function(file) { $('#'+file.id).find('p.state').text('上传成功！'); });
+uploader.on('uploadError', function(file) { $('#'+file.id).find('p.state').text('上传出错!'); });
+
+$(function(){
+    $('#add_member').ajaxForm({
+        beforeSubmit: function(){
+            if(''==$.trim($('#account').val())){
+                layer.msg('请输入账号',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+            if(''==$.trim($('#password').val())){
+                layer.msg('请输入密码',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+            if(''==$.trim($('#group_id').val())){
+                layer.msg('请选择会员组',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        success: function(data){
+            if(data.code==1){
+                layer.msg(data.msg,{icon:6,time:1500,shade:0.1},function(){ window.location.href="{:url('member/index')}"; });
+            }else{
+                layer.msg(data.msg,{icon:5,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        dataType:'json'
+    });
+
+    var elem = document.querySelector('.js-switch');
+    if(elem){ var switchery = new Switchery(elem, {color:'#1AB394'}); }
+    var config = {'.chosen-select':{}};
+    for(var selector in config){ $(selector).chosen(config[selector]); }
+});
+</script>
+</body>
+</html>

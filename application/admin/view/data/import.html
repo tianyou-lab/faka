@@ -1,0 +1,87 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-table-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;overflow-x:auto}
+.g-table{width:100%;border-collapse:collapse;font-size:12px}
+.g-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.g-table td{padding:5px 10px;border-bottom:1px solid #f1f5f9;color:#334155;vertical-align:middle}
+.g-table tr:hover td{background:#f8fafc}
+.g-act{padding:2px 8px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid #e5e7eb;background:#fff;color:#475569;transition:all .15s;text-decoration:none;display:inline-block;margin:1px}
+.g-act:hover{border-color:#2563eb;color:#2563eb}
+.g-act-del{color:#ef4444;border-color:#fecaca}.g-act-del:hover{background:#fef2f2;border-color:#ef4444}
+.g-empty{text-align:center;padding:40px;color:#94a3b8;font-size:14px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+
+<div class="g-table-wrap" style="padding:14px 14px 0">
+    <div class="g-form-title">数据库还原</div>
+    <table class="g-table">
+        <thead>
+            <tr>
+                <th>备份名称</th>
+                <th>卷数</th>
+                <th>压缩</th>
+                <th>数据大小</th>
+                <th>备份时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty name="data"}
+                {volist name="data" id="vo"}
+                <tr>
+                    <td>{$vo.time|date='Ymd-His',###}</td>
+                    <td>{$vo.part}</td>
+                    <td>{$vo.compress}</td>
+                    <td>{$vo.size|format_bytes}</td>
+                    <td>{$key}</td>
+                    <td>-</td>
+                    <td>
+                        <a class="g-act db-import" href="{:url('revert',['time'=>$vo['time']])}">还原</a>
+                        <a class="g-act g-act-del" href="{:url('del',['time'=>$vo['time']])}">删除</a>
+                    </td>
+                </tr>
+                {/volist}
+            {else /}
+                <tr><td colspan="7" class="g-empty">暂无备份数据</td></tr>
+            {/notempty}
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+{include file="public/footer" /}
+
+<script type="text/javascript">
+$(function(){
+    $(".db-import").click(function(){
+        var self = this, status = ".";
+        $.get(self.href, success, "json");
+        window.onbeforeunload = function(){ return "正在还原数据库，请不要关闭！"; };
+        return false;
+        function success(data){
+            if(data.code){
+                if(data.data.gz){
+                    data.msg += status;
+                    if(status.length === 5){ status = "."; } else { status += "."; }
+                }
+                $(self).parent().prev().text(data.msg);
+                if(data.data.part){
+                    $.get(self.href, {"part":data.data.part,"start":data.data.start}, success, "json");
+                }else{
+                    window.onbeforeunload = function(){ return null; };
+                }
+            }else{
+                layer.alert(data.msg, 0);
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

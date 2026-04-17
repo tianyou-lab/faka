@@ -1,0 +1,79 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">添加充值赠送</div>
+    <form class="form-horizontal" name="add_member" id="add_member" method="post" action="{:url('add_give')}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">大于金额（元）：</label>
+            <div class="input-group col-sm-4">
+                <input id="paymoney" type="number" step="0.0001" class="form-control" name="paymoney" placeholder="请输充值大于金额">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">赠送方式：</label>
+            <div class="input-group col-sm-4">
+                <div class="radio i-checks">
+                    <input type="radio" name='paytype' value="0" checked/>单笔赠送&nbsp;&nbsp;
+                    <input type="radio" name='paytype' value="1" />按比例赠送
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">赠送金额/比例（元/折）：</label>
+            <div class="input-group col-sm-4">
+                <input id="givemoney" type="number" class="form-control" name="givemoney" value="0" step="0.0001">
+                <div class="g-hint">赠送方式：单笔赠送 此数值就是 单笔赠送多少元  赠送方式：按比例  就是按充值的金额的比例赠送 比例范围0-100</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('#add_member').ajaxForm({
+        beforeSubmit: function(){
+            if(''==$.trim($('#paymoney').val())){
+                layer.msg('请输入大于金额',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+            if(''==$.trim($('#givemoney').val())){
+                layer.msg('请输入赠送金额或折扣',{icon:2,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        success: function(data){
+            if(data.code==1){
+                layer.msg(data.msg,{icon:6,time:1500,shade:0.1},function(){ window.location.href="{:url('give/index')}"; });
+            }else{
+                layer.msg(data.msg,{icon:5,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        dataType:'json'
+    });
+    var elem = document.querySelector('.js-switch');
+    if(elem){ var switchery = new Switchery(elem, {color:'#1AB394'}); }
+    var config = {'.chosen-select':{}};
+    for(var selector in config){ $(selector).chosen(config[selector]); }
+});
+</script>
+</body>
+</html>

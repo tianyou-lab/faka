@@ -1,0 +1,1740 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/style.css">
+<style type="text/css">
+.g-page{padding:10px}
+.g-config-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:16px}
+.g-config-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px}
+.nav-tabs.nav>li>a{padding:10px 25px;margin-right:0}
+.nav-tabs.nav>li>a:hover,.nav-tabs.nav>li.active>a{border-top:3px solid #2563eb;padding-top:8px;border-bottom:1px solid #fff}
+.nav-tabs>li>a{color:#A7B1C2;font-weight:500;margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:0}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-config-wrap">
+    <div class="g-config-title">网站配置</div>
+    <div class="panel blank-panel">
+        <div class="panel-heading">
+            <div class="panel-options">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">基本配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">内容配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">系统配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-4" aria-expanded="false">短信配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-5" aria-expanded="false">验证码配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-6" aria-expanded="false">支付配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-7" aria-expanded="false">TOKEN配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-8" aria-expanded="false">前端配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-9" aria-expanded="false">颜色配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-10" aria-expanded="false">邮箱配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-11" aria-expanded="false">模版配置</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-12" aria-expanded="false">WAP模版</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-13" aria-expanded="false">会员注册</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-14" aria-expanded="false">图片上传</a></li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane active">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">站点统一名称：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[unified_site_name]" value="{$config.unified_site_name}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 同步用于：首页名字、手机端标题、商户简称、网站标题</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+					                        <div class="form-group">
+					                            <label class="col-sm-2 control-label">主网站logo：</label>
+					                            <div class="input-group col-sm-4">
+					                                <input type="hidden" id="data_photo" name="config[web_logo]" value="{$config.web_logo}">
+					                                <div id="fileList" class="uploader-list" ></div>
+					                                <div id="imgPicker" style="float:left">
+					                                	选择图片
+					                                
+					                               
+					                                </div>  
+					                                <div>
+					                                	 <button name="deleteimg" class="btn btn-danger" type="button" style="margin-left: 10px;height: 38px;"><i class="fa fa-trash"></i>删除图片</button>
+					                                	
+					                                </div>
+					                                <div>
+					                                	<img id="img_data"  style="margin-top: 10px;" height="74px" width="413px"  src="/uploads/images/{$config.web_logo}" onerror="this.src='/static/admin/images/noimg.png'"/>
+					                                </div>
+					                                
+					                                
+					                                   
+					                            </div>
+					                        </div> 
+					                     	<div class="hr-line-dashed"></div>
+					                        <div class="form-group">
+					                            <label class="col-sm-2 control-label">积分商城logo：</label>
+					                            <div class="input-group col-sm-4">
+					                                <input type="hidden" id="data_photo" name="config[jifen_logo]" value="{$config.jifen_logo}">
+					                                <div id="fileList" class="uploader-list" ></div>
+					                                <div id="imgPicker" style="float:left">
+					                                	选择图片
+					                                
+					                               
+					                                </div>  
+					                                <div>
+					                                	 <button name="deleteimg" class="btn btn-danger" type="button" style="margin-left: 10px;height: 38px;"><i class="fa fa-trash"></i>删除图片</button>
+					                                	
+					                                </div>
+					                                <div>
+					                                	<img id="img_data"  style="margin-top: 10px;" height="74px" width="413px"  src="/uploads/images/{$config.jifen_logo}" onerror="this.src='/static/admin/images/noimg.png'"/>
+					                                </div>
+					                                
+					                                
+					                                   
+					                            </div>
+					                        </div> 
+					                
+						                        
+						                 <div class="hr-line-dashed"></div>
+					                        <div class="form-group">
+					                            <label class="col-sm-2 control-label">微信添加好友二维码：</label>
+					                            <div class="input-group col-sm-4">
+					                                <input type="hidden" id="data_photo" name="config[weixin_erweima]" value="{$config.weixin_erweima}">
+					                                <div id="fileList" class="uploader-list"></div>
+					                                <div id="imgPicker" style="float:left">
+					                                	选择图片
+					                                
+					                               
+					                                </div>  
+					                                <div>
+					                                	 <button name="deleteimg" class="btn btn-danger" type="button" style="margin-left: 10px;height: 38px;"><i class="fa fa-trash"></i>删除图片</button>
+					                                	
+					                                </div>
+					                                <div>
+					                                	<img id="img_data"  style="margin-top: 10px;" height="200px" width="200px"  src="/uploads/images/{$config.weixin_erweima}" onerror="this.src='/static/admin/images/noimg.png'"/>
+					                                </div>
+					                                
+					                                     
+					                            </div>
+					                        </div> 
+											
+					                        
+                                        
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">网站域名：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_host]" value="{$config.web_host}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 网站域名 例子：baidu.com</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                         
+                                                                         
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">网站描述：</label>
+                                            <div class="input-group col-sm-4">
+                                                <textarea class="form-control" type="text" rows="3" name="config[web_site_description]">{$config.web_site_description}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 网站搜索引擎描述</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">网站关键字：</label>
+                                            <div class="input-group col-sm-4">
+                                                <textarea class="form-control" type="text" rows="3" name="config[web_site_keyword]">{$config.web_site_keyword}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 网站搜索引擎关键字</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">网站备案号：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_site_icp]" value="{$config.web_site_icp}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置在网站底部显示的备案号，如“ 陇ICP备15002349号-1</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">统计代码：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <textarea class="form-control" type="text" rows="3" name="config[web_site_cnzz]">{$config.web_site_cnzz}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置在网站底部显示的站长统计信息</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                         <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">音乐插件代码：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <textarea class="form-control" type="text" rows="3" name="config[web_music]">{$config.web_music}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i><a href="http://music.lailiyun.com/" target="_blank">管理入口</a></span>
+											</div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">版权信息：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_site_copy]" value="{$config.web_site_copy}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置在网站底部显示的版权信息</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">联系QQ：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_qq]" value="{$config.web_qq}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置联系QQ</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">联系电话：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_mobile]" value="{$config.web_mobile}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置联系电话</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">联系旺旺：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_wangwang]" value="{$config.web_wangwang}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 设置联系旺旺</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        
+                                       
+                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">站点状态：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[web_site_close]">
+                                                    <option value="1" {if condition="$config['web_site_close'] eq 1"}selected{/if}>开启</option>
+                                                    <option value="0" {if condition="$config['web_site_close'] eq 0"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 站点关闭后除管理员外所有人访问不了后台</span>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                <div id="tab-2" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">后台每页记录数：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[list_rows]" value="{$config.list_rows}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 后台数据每页显示记录数</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">订单查询支持字段：</label>
+                                            <div class="input-group col-sm-4">
+                                                <div class="checkbox i-checks">
+                                                    <input type="checkbox" name='config[select_mcard]'  {if condition="$config['select_mcard'] eq 1"}value="1" checked="checked"{/if} />订单号&nbsp;&nbsp;
+                                                    <input type="checkbox" name='config[select_mobile]'  {if condition="$config['select_mobile'] eq 1"}value="1" checked="checked"{/if} />联系手机
+                                                    <input type="checkbox" name='config[select_cookie]'  {if condition="$config['select_cookie'] eq 1"}value="1" checked="checked"{/if} />本地缓存
+                                                </div>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>订单查询支持的字段</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                <div id="tab-3" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">                             
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">禁止后台访问IP：</label>
+                                            <div class="input-group col-sm-4">
+                                                <textarea class="form-control" type="text" rows="3" name="config[admin_allow_ip]">{$config.admin_allow_ip}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 多个用#号分隔，如果不配置表示不限制IP访问</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">HTTPS：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[is_https]">
+                                                    <option value="https" {if condition="$config['is_https'] eq 'https'"}selected{/if}>开启</option>
+                                                    <option value="http" {if condition="$config['is_https'] eq 'http'"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 配置好HTTPS认证之后，一定要这里选择开启</span>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                <div id="tab-4" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">对接ID：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alisms_appkey]" value="{$config.alisms_appkey}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> <a href="http://xw.wyisp.com/" class="cblue" target="_blank">申请帐号</a></span>                                           
+                                            </div>
+                                        </div>                                 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">对接Token：</label>
+                                            <div class="input-group col-sm-4">  
+												{if condition="$config['alisms_appsecret'] eq ''"}
+                                                <input type="text" class="form-control" name="config[alisms_appsecret]" value="{$config.alisms_appsecret}">
+                                                {else/}
+                                                <input type="text" class="form-control" name="config[alisms_appsecret]" value="***密文***">
+                                                {/if}                                      
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">签名：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alisms_signname]" value="{$config.alisms_signname}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>（通用签名：综合商城 发卡系统 发卡商城 如需自定义签名请联系客服 ）</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">新订单提醒(手动发货订单)：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_id]" value="{$config.alimoban_id}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版内容参考格式：亲，有新订单啦！请尽快登录网站发货，商品名称：${shopname}。</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">手机注册验证码：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_reg]" value="{$config.alimoban_reg}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：验证码为：${code}，您正在注册成为平台会员，感谢您的支持！</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">手动商品发货通知：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_fahuo]" value="{$config.alimoban_fahuo}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：尊敬的客户，您购买的商品：${shopname},当前状态：${status},如有疑问请联系客服。</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">商户提现通知：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_tixian]" value="{$config.alimoban_tixian}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：平台商户：${name}，提现金额${money}元，请及时处理。</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">提现到账通知：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_tixiandaozhang]" value="{$config.alimoban_tixiandaozhang}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：【签名】尊敬的${username}：你的账户提现到账成功，到账金额${money}元，请注意查收，如有疑问请及时联系客服。</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">提现撤回通知：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_tixianchehui]" value="{$config.alimoban_tixianchehui}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：【签名】佣金提现失败，原因:${make},如有疑问，请及时联系客服</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">找回密码：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[alimoban_resetpwd]" value="{$config.alimoban_resetpwd}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 模版参考格式：【签名】您的动态码为：${code}，您正在进行密码重置操作，如非本人操作，请忽略本短信！</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                <div id="tab-5" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                         <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">验证码类型：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[CODE_TYPE]">
+                                                    <option value="0" {if condition="$config['CODE_TYPE'] eq 0"}selected{/if}>普通验证码</option>
+                                                    <option value="1" {if condition="$config['CODE_TYPE'] eq 1"}selected{/if}>极验滑块验证码</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 注意：选择极验的需要填写下面的ID KEY</span>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">极验滑块ID：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[Geetest_ID]" value="{$config.Geetest_ID}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> <a href="http://www.geetest.com" target="_blank">极验geetest官方</a></span>                                           
+                                            </div>
+                                        </div>                                 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">极验滑块KEY：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="password" class="form-control" name="config[Geetest_KEY]" value="{$config.Geetest_KEY}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> <a href="http://www.geetest.com" target="_blank">极验geetest官方</a></span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                 <div id="tab-6" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  									
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">支付宝：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[blfk_pay_alipay]">
+                                                    <option value="0" {if condition="$config['blfk_pay_alipay'] eq 0"}selected{/if}>关闭</option>
+                                                    <option value="Yzf" {if condition="$config['blfk_pay_alipay'] eq 'Yzf'"}selected{/if}>蓝支付</option>
+                                                    <option value="Mq" {if condition="$config['blfk_pay_alipay'] eq 'Mq'"}selected{/if}>安卓免签</option>
+                                                    <option value="Mzf" {if condition="$config['blfk_pay_alipay'] eq 'Mzf'"}selected{/if}>码支付</option>
+                                                    <option value="Alipay" {if condition="$config['blfk_pay_alipay'] eq 'Alipay'"}selected{/if}>当面付</option>
+                                                </select>
+                                            </div>
+                                        </div> 
+										   <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信支付：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[blfk_pay_wxpay]">
+                                                    <option value="0" {if condition="$config['blfk_pay_wxpay'] eq 0"}selected{/if}>关闭</option>
+                                                    <option value="Yzf" {if condition="$config['blfk_pay_wxpay'] eq 'Yzf'"}selected{/if}>蓝支付</option>
+                                                    <option value="Mq" {if condition="$config['blfk_pay_wxpay'] eq 'Mq'"}selected{/if}>安卓免签</option>
+                                                    <option value="Mzf" {if condition="$config['blfk_pay_wxpay'] eq 'Mzf'"}selected{/if}>码支付</option>
+                                                    <option value="Weixin" {if condition="$config['blfk_pay_wxpay'] eq 'Weixin'"}selected{/if}>微信官方</option>
+                                                </select>			
+                                            </div>
+                                        </div>    
+										
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">聚合支付：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[blfk_pay_Unionpay]">
+                                                    <option value="0" {if condition="$config['blfk_pay_Unionpay'] eq 0"}selected{/if}>关闭</option>
+                                                    <option value="Mzf" {if condition="$config['blfk_pay_Unionpay'] eq 'Mzf'"}selected{/if}>码支付</option>
+                                                    <option value="Mq" {if condition="$config['blfk_pay_Unionpay'] eq 'Mq'"}selected{/if}>安卓免签</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信H5：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[wx_h5]">
+                                                    <option value="0" {if condition="$config['wx_h5'] eq 0"}selected{/if}>关闭</option>
+                                                    <option value="1" {if condition="$config['wx_h5'] eq '1'"}selected{/if}>开启</option>
+                                                </select><span class="help-block m-b-none"><i class="fa fa-info-circle"></i>使用官方微信接口的情况关闭将默认使用native支付</span> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信JSAPI：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[wx_jsapi]">
+                                                    <option value="0" {if condition="$config['wx_jsapi'] eq 0"}selected{/if}>关闭</option>
+                                                    <option value="1" {if condition="$config['wx_jsapi'] eq '1'"}selected{/if}>开启</option>
+                                                </select><span class="help-block m-b-none"><i class="fa fa-info-circle"></i>使用官方微信接口的情况关闭将默认使用native支付</span>   
+                                            </div>
+                                        </div>
+										
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">支付宝应用appid：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[app_id]" value="{$config.app_id}">   
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i><a href="http://xw.wyisp.com/" target="_blank">当面付开通</a></span>
+                                            </div>
+                                        </div>                                 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">支付宝公钥：</label>
+                                            <div class="input-group col-sm-4">                     
+                                                <input type="text" class="form-control" name="config[ali_public_key]" value="{$config.ali_public_key}"><span class="help-block m-b-none"><i class="fa fa-info-circle"></i>回调地址{:config('is_https')}:// {$_SERVER['HTTP_HOST']}/pay/callback/callbackalipay.html</span>                                                                                  
+                                            </div>
+                                        </div>                         
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">应用私钥：</label>
+                                            <div class="input-group col-sm-4">                                     
+                                                <input type="text" class="form-control" name="config[rsa_private_key]" value="{$config.rsa_private_key}">
+											<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>回调地址如之前未填写最好别填写，不填写的情况一个应用可以用于多个站点</span>   
+                                            </div>   
+                                        </div>                      
+                                       <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信支付商户号：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[mch_id]" value="{$config.mch_id}">    
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信支付APPID：</label>											
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[wx_appid]" value="{$config.wx_appid}">    
+                                            </div>
+                                        </div>                    
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信支付API密钥：</label>
+                                            <div class="input-group col-sm-4">                      
+                                                <input type="text" class="form-control" name="config[wx_apiKey]" value="{$config.wx_apiKey}">
+                                            </div>
+                                        </div>                  
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">微信支付对应公众号的AppSecret：</label>
+                                            <div class="input-group col-sm-4">                      
+                                                <input type="text" class="form-control" name="config[wx_appKey]" value="{$config.wx_appKey}">
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">免签密钥：</label>
+                                            <div class="input-group col-sm-4">                        
+                                                <input type="text" class="form-control" name="config[pay_mqkey]" value="{$config.pay_mqkey}"> <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>和免签设置的通讯密钥设置相同</span>
+                                            </div>
+                                        </div>											
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">蓝支付对接ID：</label>
+                                            <div class="input-group col-sm-4">                        
+                                                <input type="text" class="form-control" name="config[pay_yzfid]" value="{$config.pay_yzfid}"><span class="help-block m-b-none"><i class="fa fa-info-circle"></i><a href="http://xw.wyisp.com/" target="_blank">申请账号</a></span>
+                                            </div>
+                                        </div>												
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">蓝支付对接Token：</label>
+                                            <div class="input-group col-sm-4">                        
+                                                <input type="text" class="form-control" name="config[pay_yzfkey]" value="{$config.pay_yzfkey}"><span class="help-block m-b-none"><i class="fa fa-info-circle"></i>免营业执照轮询收款</span>
+                                            </div>
+                                        </div>	
+										                                     											
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">码支付ID：</label>
+                                            <div class="input-group col-sm-4">                        
+                                                <input type="text" class="form-control" name="config[pay_mzfid]" value="{$config.pay_mzfid}"><span class="help-block m-b-none"><i class="fa fa-info-circle"></i><a href="http://mzf.lailiyun.com/" target="_blank">申请账号</a></span>
+                                            </div>
+                                        </div>										
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">码支付密钥：</label>
+                                            <div class="input-group col-sm-4">                        
+                                                <input type="text" class="form-control" name="config[pay_mzfkey]" value="{$config.pay_mzfkey}">
+                                            </div>
+                                        </div>	
+                                   
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+								
+                                
+                               <div id="tab-7" class="tab-pane">
+                                    <form id="formtoken" action="" method="post" class="form-horizontal">  
+                                                                    
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">TOKEN：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" id="tokentext" class="form-control" name="config[token]" value="***密文***" readonly="readonly">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> token用于添加订单使用,切勿泄漏给他人</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button id="puttoken" class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 生成随机TOKEN</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>  
+                                
+                                 <div id="tab-8" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal"> 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">公共静态资源：</label>
+                                            <div class="input-group col-sm-4">
+                                                <input type="hidden" name='config[cdnpublic]' value="/static/cdn/">
+                                                <span class="form-control" style="background:#f5f5f5;">本地加载 (/static/cdn/)</span>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 已优化为本地加载，无需CDN</span>
+                                            </div>
+                                        </div>  
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">联系手机：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[lianxi_mobile]">
+                                                    <option value="1" {if condition="$config['lianxi_mobile'] eq 1"}selected{/if}>必填</option>
+                                                    <option value="0" {if condition="$config['lianxi_mobile'] eq 0"}selected{/if}>选填</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 必填：需要强制填写  选填：不强制填写 </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">联系邮箱：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[lianxi_email]">
+                                                    <option value="1" {if condition="$config['lianxi_email'] eq 1"}selected{/if}>必填</option>
+                                                    <option value="0" {if condition="$config['lianxi_email'] eq 0"}selected{/if}>选填</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  必填：需要强制填写  选填：不强制填写</span>
+                                            </div>
+                                        </div>
+                                        
+                                         <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">导航：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[web_daohang]">
+                                                    <option value="1" {if condition="$config['web_daohang'] eq 1"}selected{/if}>开启</option>
+                                                    <option value="0" {if condition="$config['web_daohang'] eq 0"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  开启：经典模版显示导航  关闭：经典模版不显示导航</span>
+                                            </div>
+                                        </div>
+                                        
+                                         <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">楼层导航：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[web_louceng]">
+                                                    <option value="1" {if condition="$config['web_louceng'] eq 1"}selected{/if}>开启</option>
+                                                    <option value="0" {if condition="$config['web_louceng'] eq 0"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  开启：经典模版显示楼层导航  关闭：经典模版不显示楼层导航</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">历史提货显示：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[web_lishi]">
+                                                                {if condition="$config['web_lishi'] eq 0 "}
+                                                                <option value="0" selected>头部显示</option>
+                                                                <option value="1" />尾部显示</option>
+                                                                <option value="2" />不显示</option>
+                                                                {elseif condition="$config['web_lishi'] eq 1 "/}
+                                                                <option value="0" />头部显示</option>
+                                                                <option value="1" selected>尾部显示</option>
+                                                                <option value="2" />不显示</option>
+                                                                {elseif condition="$config['web_lishi'] eq 2 "/}
+                                                                <option value="0" />头部显示</option>
+                                                                <option value="1" />尾部显示</option>
+                                                                <option value="2" selected>不显示</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        
+                                        
+                                        
+                                         <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">手机版本显示：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[m_status]">
+                                                                {if condition="$config['m_status'] eq 0 "}
+                                                                <option value="0" selected>提示进入</option>
+                                                                <option value="1" />直接进入</option>
+                                                                <option value="2" />不启用</option>
+                                                                {elseif condition="$config['m_status'] eq 1 "/}
+                                                                <option value="0" />提示进入</option>
+                                                                <option value="1" selected>直接进入</option>
+                                                                <option value="2" />不启用</option>
+                                                                {elseif condition="$config['m_status'] eq 2 "/}
+                                                                <option value="0" />提示进入</option>
+                                                                <option value="1" />直接进入</option>
+                                                                <option value="2" selected>不启用</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                         <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">WAP简单模版格子样式：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[wap_moban2_css]">
+                                                                {if condition="$config['wap_moban2_css'] eq 0 "}
+                                                                <option value="0" selected>默认样式</option>
+                                                                <option value="1" />二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                {elseif condition="$config['wap_moban2_css'] eq 1 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" selected>二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                
+                                                                {elseif condition="$config['wap_moban2_css'] eq 2 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" >二行样式</option>
+                                                                <option value="2" selected>一行样式</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">WAP图片模版格子样式：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[wap_moban3_css]">
+                                                                {if condition="$config['wap_moban3_css'] eq 0 "}
+                                                                <option value="0" selected>默认样式</option>
+                                                                <option value="1" />二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                <option value="3" />横条模式</option>
+                                                                {elseif condition="$config['wap_moban3_css'] eq 1 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" selected>二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                <option value="3" />横条模式</option>
+                                                                {elseif condition="$config['wap_moban3_css'] eq 2 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" >二行样式</option>
+                                                                <option value="2" selected>一行样式</option>
+                                                                <option value="3" />横条模式</option>
+                                                                {elseif condition="$config['wap_moban3_css'] eq 3 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" >二行样式</option>
+                                                                <option value="2" >一行样式</option>
+                                                                <option value="3" selected/>横条模式</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">PC经典模版格子样式：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[pc_jingdian_css]">
+                                                                {if condition="$config['pc_jingdian_css'] eq 0 "}
+                                                                <option value="0" selected>默认样式</option>
+                                                                <option value="1" />二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                {elseif condition="$config['pc_jingdian_css'] eq 1 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" selected>二行样式</option>
+                                                                <option value="2" />一行样式</option>
+                                                                
+                                                                {elseif condition="$config['pc_jingdian_css'] eq 2 "/}
+                                                                <option value="0" >默认样式</option>
+                                                                <option value="1" >二行样式</option>
+                                                                <option value="2" selected>一行样式</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">卡密头部显示附加信息：</label>
+                                            <div class="col-sm-8">
+                                                <textarea name="config[kami_tou]" id="myEditortou2">{$config.kami_tou}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 在卡密显示头部附加信息，可以为空</span>                                           
+                                            </div>
+                                        </div> 
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">卡密尾部显示附加信息：</label>
+                                            <div class="col-sm-8">                                              
+                                                <textarea name="config[kami_wei]" id="myEditorwei2">{$config.kami_wei}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 在卡密显示尾部附加信息，可以为空</span>                                           
+                                            </div>
+                                        </div>   
+                                        
+                                       
+                                       
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">首页公告内容：</label>
+                                            <div class="col-sm-8">
+                                                <textarea name="config[home_notice_content]" id="myEditorNotice2">{$config.home_notice_content|default=''}</textarea>
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 用于首页顶部公告条与弹窗公告，支持富文本</span>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                       <div class="form-group">
+                                            <label class="col-sm-2 control-label">启用短网址：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[shorturl]">
+                                                    <option value="1" {if condition="$config['shorturl'] eq 1"}selected{/if}>开启</option>
+                                                    <option value="0" {if condition="$config['shorturl'] eq 0"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  图片模版商品地址缩短网址</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">首页自动弹出公告：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[tangg]">
+                                                    <option value="1" {if condition="$config['tangg'] eq 1"}selected{/if}>开启</option>
+                                                    <option value="0" {if condition="$config['tangg'] eq 0"}selected{/if}>关闭</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  首页自动弹出公告</span>
+                                            </div>
+                                        </div>
+                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">弹出公告时间间隔：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[tanggjiange]" value="{$config.tanggjiange}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 自动弹出公告时间间隔 单位：秒</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">WAP图片风格模版热门分类是否隐藏：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[waphot]">
+                                                    <option value="1" {if condition="$config['waphot'] eq 1"}selected{/if}>隐藏</option>
+                                                    <option value="0" {if condition="$config['waphot'] eq 0"}selected{/if}>显示</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  WAP图片风格模版热门分类是否隐藏</span>
+                                            </div>
+                                        </div>
+										
+					                        
+					                      <div class="hr-line-dashed"></div>
+										  
+										   <div class="form-group">
+					                            <label class="col-sm-2 control-label">WAP_banner(简单风格模版)：</label>
+					                            <div class="input-group col-sm-4">
+					                                <input type="hidden" id="data_photo" name="config[web_wapbanner]" value="{$config.web_wapbanner}">
+					                                <div id="fileList" class="uploader-list" ></div>
+					                                <div id="imgPicker" style="float:left">
+					                                	选择图片
+					                                </div>  
+					                                <div>
+					                                	 <button name="deleteimg" class="btn btn-danger" type="button" style="margin-left: 10px;height: 38px;"><i class="fa fa-trash"></i>删除图片</button>
+					                                	
+					                                </div>
+					                                <div>
+					                                	<img id="img_data"  style="margin-top: 10px;" height="74px" width="413px"  src="/uploads/images/{$config.web_wapbanner}" onerror="this.src='/static/admin/images/noimg.png'"/>
+					                                </div>
+					                              <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 推荐图片大小850*490</span>   
+					                            </div>
+					                        </div> 
+											
+											  
+											
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                <div id="tab-9" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+		                            <div class="hr-line-dashed"></div>                                    
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">热门分类背景颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[hotcolor]" value="{$config.hotcolor}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 热门分类背景颜色（wap图片风格模版）<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div> 
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">爆款推荐背景颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[baocolor]" value="{$config.baocolor}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 爆款推荐背景颜色（wap图片风格模版）<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">PC经典模版标题背景颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[pc_jingdian_title_beijing_color]" value="{$config.pc_jingdian_title_beijing_color}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> PC经典模版标题背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">PC经典模版标题颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[pc_jingdian_title_color]" value="{$config.pc_jingdian_title_color}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> PC经典模版标题颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">PC经典模版公告背景颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[pc_jingdian_gg_color]" value="{$config.pc_jingdian_gg_color}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> PC经典模版公告背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">PC经典模版底部背景颜色：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[pc_jd_footer_color]" value="{$config.pc_jd_footer_color}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> PC经典模版底部背景颜色<a href="http://tool.oschina.net/commons?type=3" target="_blank">查看颜色代码</a></span>                                           
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                
+                                 <div id="tab-10" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">邮箱服务器：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[mail_host]" value="{$config.mail_host}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>邮箱服务器 </span>                                           
+                                            </div>
+                                        </div>                                 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">邮箱端口：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[mail_port]" value="{$config.mail_port}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 邮箱端口</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">邮箱帐号：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[mail_username]" value="{$config.mail_username}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 邮箱帐号</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">邮箱密码：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                {if condition="$config['mail_password'] eq ''"}
+                                                <input type="text" class="form-control" name="config[mail_password]" value="{$config.mail_password}">
+                                                {else/}
+                                                <input type="text" class="form-control" name="config[mail_password]" value="***密文***">
+                                                {/if}
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 邮箱密码</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">发件人：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[mail_senduser]" value="{$config.mail_senduser}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 发件人</span>                                           
+                                            </div>
+                                        </div>
+                                     
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                                                
+                                
+                                
+                                 <div id="tab-11" class="tab-pane">
+                                    <form id="formmoban"  action="" method="post" class="form-horizontal">  
+                                         <input type="hidden" id="moban_index" name="config[moban_index]" value="{$config.moban_index}">
+                                        
+                                        <div class="row">
+                                        	    <div class="col-sm-6 col-md-3">
+											        <div class="thumbnail">
+											            <img src="__IMG__/jingdian.jpg" 
+											            alt="经典模版" style="height: 200px;">
+											            <div class="caption" style="text-align: center;">
+											                <h3>经典模版</h3>
+											                
+											                <p>
+											                	
+											                	{if condition="$config.moban_index eq 1"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	  <button  id="moban1" name="qiyong" type="submit"   class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                   
+											                   
+											                </p>
+											            </div>
+											        </div>
+											    </div>
+											    <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/917.jpg" 
+											             alt="仿917模版" style="height: 200px;">
+											            <div class="caption" style="text-align: center;">
+											                <h3>仿917模版</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 2"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban2" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											
+											    
+											    <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/jdmb.png" 
+											             alt="简单模版" style="height: 200px;">
+											            <div class="caption" style="text-align: center;">
+											                <h3>简单模版</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 3"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban3" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											      <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/pc4.jpg" 
+											             alt="简易商城A" style="height: 200px;">
+											            <div class="caption">
+											                <h3>简易商城A</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 4"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban4" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											    
+											    
+											    <div class="col-sm-6 col-md-3">
+											       <div class="thumbnail">
+											            <img src="__IMG__/pc5.jpg" 
+											             alt="简易商城B" style="height: 200px;">
+											            <div class="caption">
+											                <h3>简易商城B</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 5"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban5" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+												
+											    <div class="col-sm-6 col-md-3">
+											       <div class="thumbnail">
+											            <img src="__IMG__/pc6.jpg" 
+											             alt="优云宝" style="height: 200px;">
+											            <div class="caption">
+											                <h3>优云宝</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 6"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban6" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											    
+											    <div class="col-sm-6 col-md-3">
+											       <div class="thumbnail">
+											            <img src="__IMG__/pc4.jpg" 
+											             alt="现代模版" style="height: 200px;filter:hue-rotate(180deg);">
+											            <div class="caption">
+											                <h3>现代模版</h3>
+											               
+											                <p>
+											                    {if condition="$config.moban_index eq 7"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="moban7" name="qiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											</div>
+                                        
+                                        
+                                        
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                <div id="tab-12" class="tab-pane">
+                                    <form id="wapformmoban"  action="" method="post" class="form-horizontal">  
+                                         <input type="hidden" id="wapmoban_index" name="config[wapmoban_index]" value="{$config.wapmoban_index}">
+                                        
+                                        <div class="row">
+                                        	    <div class="col-sm-6 col-md-3">
+											        <div class="thumbnail">
+											            <img src="__IMG__/wapjingdian.jpg" 
+											            alt="经典wap模版" width="200" height="400">
+											            <div class="caption" style="text-align: center;">
+											                <h3>经典wap模版</h3>
+											                
+											                <p>
+											                	
+											                	{if condition="$config.wapmoban_index eq 1"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	  <button  id="wapmoban1" name="wapqiyong" type="submit"   class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                   
+											                   
+											                </p>
+											            </div>
+											        </div>
+											    </div>
+											    <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/wapjiandan.png" 
+											             alt="简单风格模版" width="200" height="400">
+											            <div class="caption" style="text-align: center;">
+											                <h3>简单风格模版</h3>
+											               
+											                <p>
+											                    {if condition="$config.wapmoban_index eq 2"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="wapmoban2" name="wapqiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											    
+											    <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/imgmobile.jpg" 
+											             alt="图片风格模版" width="200" height="400">
+											            <div class="caption" style="text-align: center;">
+											                <h3>图片风格模版</h3>
+											               
+											                <p>
+											                    {if condition="$config.wapmoban_index eq 3"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="wapmoban3" name="wapqiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											
+											    <div class="col-sm-6 col-md-3">
+											         <div class="thumbnail">
+											            <img src="__IMG__/youyunbao.jpg" 
+											             alt="优云宝" width="200" height="400">
+											            <div class="caption" style="text-align: center;">
+											                <h3>优云宝</h3>
+											               
+											                <p>
+											                    {if condition="$config.wapmoban_index eq 4"}
+											                	<span  class="label label-danger" style="font-size: 25px;">
+											                        当前使用模版
+											                    </span> 
+											                	{else/}
+											                	 <button  id="wapmoban4" name="wapqiyong" type="submit"  class="btn btn-primary" role="button">
+											                        点我启用
+											                    </button> 
+											                	{/if}
+											                  
+											                </p>
+											            </div>
+											         </div>
+											    </div>
+											
+											    
+											    <div class="col-sm-6 col-md-3">
+											         
+											    </div>
+											    <div class="col-sm-6 col-md-3">
+											       
+											    </div>
+											</div>
+                                        
+                                        
+                                        
+                                    </form>
+                                </div>
+                                
+                                
+                                <div id="tab-13" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">                             
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                                <label class="col-sm-2 control-label">会员注册模式：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[web_reg_type]">
+                                                                {if condition="$config['web_reg_type'] eq 0 "}
+                                                                <option value="0" selected>非会员模式（不需要注册会员也不能注册）</option>
+                                                                <option value="1" />强制会员模式（必须注册才能购买）</option>
+                                                                <option value="2" />自由会员模式（可以注册购买，也可以不注册购买）</option>
+                                                                {elseif condition="$config['web_reg_type'] eq 1 "/}
+                                                                <option value="0" >非会员模式（不需要注册会员也不能注册）</option>
+                                                                <option value="1" selected>强制会员模式（必须注册才能购买）</option>
+                                                                <option value="2" />自由会员模式（可以注册购买，也可以不注册购买）</option>
+                                                                
+                                                                {elseif condition="$config['web_reg_type'] eq 2 "/}
+                                                                <option value="0" >非会员模式（不需要注册会员也不能注册）</option>
+                                                                <option value="1" >强制会员模式（必须注册才能购买）</option>
+                                                                <option value="2" selected>自由会员模式（可以注册购买，也可以不注册购买）</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                                <label class="col-sm-2 control-label">会员注册形式：</label>
+                                                <div class="input-group col-sm-4">
+                                                    <select class="form-control" name="config[web_reg_xingshi]">
+                                                                {if condition="$config['web_reg_xingshi'] eq 0 "}
+                                                                <option value="0" selected>仅普通帐号注册形式</option>
+                                                                <option value="1" />仅手机号注册形式</option>
+                                                                <option value="2" />手机号+普通帐号自由选择形式</option>
+                                                                {elseif condition="$config['web_reg_xingshi'] eq 1 "/}
+                                                                <option value="0" />仅普通帐号注册形式</option>
+                                                                <option value="1" selected>仅手机号注册形式</option>
+                                                                <option value="2" />手机号+普通帐号自由选择形式</option>
+                                                                
+                                                                {elseif condition="$config['web_reg_xingshi'] eq 2 "/}
+                                                                <option value="0" />仅普通帐号注册形式</option>
+                                                                <option value="1" />仅手机号注册形式</option>
+                                                                <option value="2" selected>手机号+普通帐号自由选择形式</option>
+                                                                {/if}
+                                                        
+                                                    </select>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">会员审核：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[web_reg_status]">
+                                                    <option value="0" {if condition="$config['web_reg_status'] eq 0"}selected{/if}>自动审核</option>
+                                                    <option value="1" {if condition="$config['web_reg_status'] eq 1"}selected{/if}>手动审核</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>  自动审核：会员注册自动开通  手动审核：会员注册之后需要联系管理员开通</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">注册赠送积分：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_reg_point]" value="{$config.web_reg_point}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>注册赠送积分 </span>                                           
+                                            </div>
+                                        </div>   
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">注册赠送金额：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[web_reg_money]" value="{$config.web_reg_money}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>注册赠送金额 单位：元 </span>                                           
+                                            </div>
+                                        </div> 
+                                        
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">密码输错多少次冻结：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[loginerrornum]" value="{$config.loginerrornum}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>密码输错多少次冻结 </span>                                           
+                                            </div>
+                                        </div>  
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">冻结时间：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[frozentime]" value="{$config.frozentime}">
+                                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>单位：分 </span>                                           
+                                            </div>
+                                        </div>  
+                                       
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                
+                                <div id="tab-14" class="tab-pane">
+                                    <form action="{:url('save')}" method="post" class="form-horizontal">  
+                                         <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">上传方式：</label>
+                                            <div class="input-group col-sm-4">
+                                                                                                <select class="form-control" name="config[uploadtype]">
+                                                    <option value="0" {if condition="$config['uploadtype'] eq 0"}selected{/if}>本地存储</option>
+                                                    <option value="1" {if condition="$config['uploadtype'] eq 1"}selected{/if}>七牛云存储</option>
+                                                </select>
+                                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 注意：选择七牛云存储方式需要配置下面的参数</span>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>                                
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">七牛云AK：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[qiniu_ak]" value="{$config.qiniu_ak}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> <a href="http://www.qiniu.com" target="_blank">七牛云官方地址</a></span>                                           
+                                            </div>
+                                        </div>                                 
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">七牛云SK：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[qiniu_sk]" value="{$config.qiniu_sk}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> <a href="http://www.qiniu.com" target="_blank">七牛云官方地址</a></span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">七牛云Bucket：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[qiniu_bucket]" value="{$config.qiniu_bucket}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> 对象存储空间名字</span>                                           
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">七牛云domain：</label>
+                                            <div class="input-group col-sm-4">                                              
+                                                <input type="text" class="form-control" name="config[qiniu_domain]" value="{$config.qiniu_domain}">
+                                                <span class="help-block m-b-none" style="margin-top: 43px;"><i class="fa fa-info-circle"></i> 七牛云绑定域名 例子：http://img.baidu.com  记得一定要带上http://</span>                                           
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-3">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                                            </div>
+                                        </div>                               
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript" src="/static/admin/webupload/webuploader.min.js"></script>
+<script type="text/javascript">
+
+var uploader=new Array();
+ $("div[id=imgPicker]").each(function(index){
+      var $list = $(this).prev();
+      if(index==0){
+      	 var thumbnailWidth = 413;   //缩略图高度和宽度 （单位是像素），当宽高度是0~1的时候，是按照百分比计算，具体可以看api文档
+      	var thumbnailHeight = 74;
+      }else{
+      var thumbnailWidth = 200;   //缩略图高度和宽度 （单位是像素），当宽高度是0~1的时候，是按照百分比计算，具体可以看api文档
+      var thumbnailHeight = 200;
+      }
+      
+      var data_photo=$(this).parent('div').eq(0).find('input');
+      var img_data=$(this).next().next().children("img");
+      //alert(data_photo.val());
+    // $(this).addClass('webuploader-container');
+     uploader[index] = WebUploader.create({
+     
+        auto: true,// 选完文件后，是否自动上传。   
+        swf: '/static/admin/webupload/Uploader.swf',// swf文件路径 
+        server: "{:url('Upload/uploadico')}",// 文件接收服务端。
+        duplicate :true,// 重复上传图片，true为可重复false为不可重复
+        pick:$(this),// 选择文件的按钮。可选。
+
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png,ico',
+            mimeTypes: 'image/*'
+        },
+
+        'onUploadSuccess': function(file, data, response) {
+           data_photo.val(data._raw);
+           img_data.attr('src', '/uploads/images/' + data._raw).show();
+           //img_data.hide();
+        }
+    });
+
+    uploader[index].on( 'fileQueued', function( file ) {
+      
+        
+        
+         var $li = $(  
+               '<div id="' + file.id + '" class="file-item thumbnail">' +  
+                   '<img>' +  
+                   '<div class="info">' + file.name + '</div>' +  
+               '</div>'  
+               ),  
+           $img = $li.find('img');  
+  
+  
+       // $list为容器jQuery实例  
+       //$list.append( $li );  
+   // 创建缩略图  
+       // 如果为非图片文件，可以不用调用此方法。  
+       // thumbnailWidth x thumbnailHeight 为 100 x 100  
+       uploader[index].makeThumb( file, function( error, src ) {   //webuploader方法  
+           if ( error ) {  
+               //$img.replaceWith('<span>不能预览</span>');  
+               return;  
+           }  
+  
+           //$img.attr( 'src', src );  
+       }, thumbnailWidth, thumbnailHeight );  
+     
+    });
+      // 文件上传过程中创建进度条实时显示。
+    uploader[index].on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress span');
+ 
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $('<p class="progress"><span></span></p>')
+                    .appendTo( $li )
+                    .find('span');
+        }
+ 
+        $percent.css( 'width', percentage * 100 + '%' );
+    });
+
+    // 文件上传成功
+    uploader[index].on( 'uploadSuccess', function( file ) {
+       
+         layer.alert("上传成功",{offset: '250px',icon:1});  
+         
+    });
+
+    // 文件上传失败，显示上传出错。
+    uploader[index].on( 'uploadError', function( file ) {
+        $( '#'+file.id ).find('p.state').text('上传出错!');
+    }); 
+    
+    // 完成上传完了，成功或者失败，先删除进度条。
+    uploader[index].on( 'uploadComplete', function( file ) {
+        $( '#'+file.id ).find('.progress').remove();
+    });
+    
+
+    });
+  
+
+
+
+
+    var config = {
+        '.chosen-select': {},                    
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+ $(function() {
+		$('#puttoken').click(function(){
+			 layer.confirm('是否生成新的TOKEN?', {
+										  btn: ['确定','取消'] //按钮
+										}, function(index){
+										  len = 32;
+										　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+										　　var maxPos = $chars.length;
+										　　var pwd = '';
+										　　for (i = 0; i < len; i++) {
+										　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+										　　}
+												layer.msg(pwd+"<br><br>请复制牢记您的新TOKEN", {
+													icon:1
+												  ,time: 0 //不自动关闭
+												  ,btn: ['确定生成', '取消生成']
+												  ,yes: function(index){
+												  	$('#tokentext').val(pwd);
+											    	$("#formtoken").attr("action", "{:url('save')}");    
+								    				$("#formtoken").submit(); 
+												  }
+												});
+												
+										　　
+										  //layer.close(index);
+										},function(index){
+										  layer.close(index);																  
+										});
+		　　
+    			return false;
+				});	
+		$('button[name=qiyong]').click(function(){
+
+			var index= $(this).attr("id");
+			if(index=='moban1'){
+				$('#moban_index').val("1");
+			}else if(index=='moban2'){
+				$('#moban_index').val("2");
+			}else if(index=='moban3'){
+				$('#moban_index').val("3");
+			}else if(index=='moban4'){
+				$('#moban_index').val("4");
+			}else if(index=='moban5'){
+				$('#moban_index').val("5");
+			}else if(index=='moban6'){
+				$('#moban_index').val("6");
+			}else if(index=='moban7'){
+				$('#moban_index').val("7");
+			}
+			
+			$("#formmoban").attr("action", "{:url('save')}");    
+			$("#formmoban").submit(); 
+										
+		　　
+    			return false;
+				});
+		$('button[name=wapqiyong]').click(function(){
+
+			var index= $(this).attr("id");
+			if(index=='wapmoban1'){
+				$('#wapmoban_index').val("1");
+			}else if(index=='wapmoban2'){
+				$('#wapmoban_index').val("2");
+			}else if(index=='wapmoban3'){
+				$('#wapmoban_index').val("3");
+			}else if(index=='wapmoban4'){
+				$('#wapmoban_index').val("4");
+			}
+			
+			$("#wapformmoban").attr("action", "{:url('save')}");    
+			$("#wapformmoban").submit(); 
+										
+		　　
+    			return false;
+				});
+		$('button[name=deleteimg]').click(function(){
+            var inputname =$(this).parent('div').parent('div').find("input").val("");
+            layer.msg('删除成功，保存配置即可生效');
+				});
+		
+});	
+
+
+</script>
+<link rel="stylesheet" href="/static/admin/tinymce6/skins/ui/oxide/skin.min.css">
+<script src="/static/admin/tinymce6/tinymce.min.js"></script>
+<script>
+tinymce.init({
+    selector: '#myEditortou2,#myEditorwei2,#myEditorNotice2',
+    language: 'zh-Hans',
+    language_url: '/static/admin/tinymce6/langs/zh-Hans.js',
+    skin: false,
+    content_css: '/static/admin/tinymce6/skins/content/default/content.min.css',
+    height: 200,
+    menubar: false,
+    branding: false,
+    plugins: 'link image code',
+    toolbar: 'undo redo | bold italic underline | forecolor backcolor | link image | code',
+    images_upload_url: "{:url('Ueditor/doupload')}?action=uploadimage",
+    images_upload_credentials: true,
+    automatic_uploads: true,
+    images_upload_handler: function(blobInfo, success, failure) {
+        var formData = new FormData();
+        formData.append('upfile', blobInfo.blob(), blobInfo.filename());
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "{:url('Ueditor/doupload')}?action=uploadimage");
+        xhr.onload = function() {
+            if (xhr.status !== 200) { failure('上传失败: ' + xhr.status); return; }
+            var json = JSON.parse(xhr.responseText);
+            if (json.state === 'SUCCESS') { success(json.url); } else { failure('上传失败: ' + json.state); }
+        };
+        xhr.send(formData);
+    }
+});
+</script>
+</body>
+</html>

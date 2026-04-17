@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{:htmlspecialchars_decode($param['data_fl']['mname'])} - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260220-auth1">
+    <link rel="stylesheet" href="/static/cdn/layer/2.2/skin/default/layer.css">
+</head>
+<body>
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+            <a href="javascript:history.back(-1);">返回</a>
+        </nav>
+    </div>
+</header>
+
+<div class="mod-order-wrap" style="max-width:800px;">
+    <div class="mod-card">
+        <div style="display:flex;gap:24px;flex-wrap:wrap;">
+            <img src="{$param['data_fl']['webimgurl']}" onerror="this.src='/static/admin/images/head_default.gif'" style="width:240px;height:240px;border-radius:12px;object-fit:cover;background:var(--gray-100);flex-shrink:0;">
+            <div style="flex:1;min-width:240px;">
+                <h1 style="font-size:22px;font-weight:700;margin-bottom:8px;color:var(--gray-900);">
+                    {if condition="$param['data_fl']['type'] eq 0"}
+                    <span class="mod-goods-item-tag mod-tag-auto">自动发货</span>
+                    {else/}
+                    <span class="mod-goods-item-tag mod-tag-manual">手动发货</span>
+                    {/if}
+                    {:htmlspecialchars_decode($param['data_fl']['mname'])}
+                </h1>
+                <div style="font-size:14px;color:var(--gray-500);margin-bottom:16px;line-height:1.8;">
+                    {:htmlspecialchars_decode($param['data_fl']['mnotice'])}
+                </div>
+                <div style="font-size:32px;font-weight:700;color:var(--danger);margin-bottom:16px;">
+                    ¥{if condition="$param['data_fl']['mprice'] lt 1"}{:number_format($param['data_fl']['mprice']/100,4)}{else/}{:number_format($param['data_fl']['mprice']/100,2)}{/if}
+                </div>
+                <div style="display:flex;gap:16px;font-size:14px;color:var(--gray-500);margin-bottom:20px;">
+                    <span>库存：<b style="color:var(--success);">{$param['data_fl']['count']}</b></span>
+                    <span>已售：{$param['data_fl']['sellercount']}</span>
+                    <span>买一件发 {$param['data_fl']['sendbeishu']} 个卡密</span>
+                </div>
+
+                <form method="post" action="{:url('Index/zywlpay')}" target="_blank">
+                    <input type="hidden" name="mpid" value="{$param['data_fl']['id']}">
+                    <input type="hidden" name="countnum" value="{$param['data_fl']['count']}">
+                    <input type="hidden" name="mmin" value="{$param['data_fl']['mmin']}">
+                    <input type="hidden" name="mmax" value="{$param['data_fl']['mmax']}">
+                    <input type="hidden" name="mname" value="{:strip_tags(htmlspecialchars_decode($param['data_fl']['mname']))}">
+                    <input type="hidden" name="mprice" value="{$param['data_fl']['mprice']}">
+                    <input type="hidden" name="sendbeishu" value="{$param['data_fl']['sendbeishu']}">
+                    <input type="hidden" name="attachgroupid" value="{$param['data_fl']['attachgroupid']}">
+                    <input type="hidden" name="mnotice" value="{:strip_tags(htmlspecialchars_decode($param['data_fl']['mnotice']))}">
+                    <div class="mod-form-group">
+                        <label class="mod-form-label">购买数量</label>
+                        <input type="number" class="mod-form-input" name="buynum" id="buynum" value="1" min="1" style="width:120px;">
+                    </div>
+                    {if condition="$param['data_fl']['count'] gt 0"}
+                    <button type="submit" class="mod-goods-btn" style="padding:12px 40px;font-size:16px;">立即购买</button>
+                    {else/}
+                    <button type="button" class="mod-goods-btn disabled" style="padding:12px 40px;font-size:16px;" disabled>暂无库存</button>
+                    {/if}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {if condition="$param['data_fl']['xqnotice'] neq ''"}
+    <div class="mod-card">
+        <div class="mod-card-title">📝 商品详情</div>
+        <div style="font-size:14px;color:var(--gray-600);line-height:1.8;">
+            {:htmlspecialchars_decode($param['data_fl']['xqnotice'])}
+        </div>
+    </div>
+    {/if}
+
+    <div class="mod-card">
+        <div class="mod-card-title">📦 同类商品</div>
+        <div class="mod-goods-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+            {volist name="GoodsLmShop" id="f" limit="8"}
+            {if condition="$f['id'] neq $param['data_fl']['id']"}
+            <div class="mod-goods-card">
+                <a href="/pg/{$f['id']}">
+                    <img class="mod-goods-img" src="{$f['webimgurl']}" onerror="this.src='/static/admin/images/head_default.gif'" style="height:140px;">
+                </a>
+                <div class="mod-goods-body" style="padding:12px;">
+                    <div class="mod-goods-name" style="font-size:13px;">{:htmlspecialchars_decode($f['mname'])}</div>
+                    <div class="mod-goods-price" style="font-size:16px;margin-top:8px;">
+                        <small>¥</small>{if condition="$f.mprice lt 1"}{:number_format($f.mprice/100,4)}{else/}{:number_format($f.mprice/100,2)}{/if}
+                    </div>
+                </div>
+            </div>
+            {/if}
+            {/volist}
+        </div>
+    </div>
+</div>
+
+<footer class="mod-footer">
+    <div class="container"><p>{:config('web_site_copy')}</p></div>
+</footer>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script src="/static/cdn/layer/2.2/layer.js"></script>
+</body>
+</html>

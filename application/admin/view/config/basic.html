@@ -1,0 +1,182 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/style.css">
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">基本配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">站点统一名称：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[unified_site_name]" value="{$config.unified_site_name}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>同步用于：首页名字、手机端标题、商户简称、网站标题</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">主网站logo：</label>
+            <div class="input-group col-sm-4">
+                <input type="hidden" id="data_photo" name="config[web_logo]" value="{$config.web_logo}">
+                <div id="fileList" class="uploader-list"></div>
+                <div id="imgPicker" style="float:left">选择图片</div>
+                <div><button name="deleteimg" class="btn btn-danger" type="button" style="margin-left:10px;height:38px;"><i class="fa fa-trash"></i>删除图片</button></div>
+                <div><img id="img_data" style="margin-top:10px;" height="74px" width="413px" src="/uploads/images/{$config.web_logo}" onerror="this.src='/static/admin/images/noimg.png'"/></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">微信添加好友二维码：</label>
+            <div class="input-group col-sm-4">
+                <input type="hidden" id="data_photo" name="config[weixin_erweima]" value="{$config.weixin_erweima}">
+                <div id="fileList" class="uploader-list"></div>
+                <div id="imgPicker" style="float:left">选择图片</div>
+                <div><button name="deleteimg" class="btn btn-danger" type="button" style="margin-left:10px;height:38px;"><i class="fa fa-trash"></i>删除图片</button></div>
+                <div><img id="img_data" style="margin-top:10px;" height="200px" width="200px" src="/uploads/images/{$config.weixin_erweima}" onerror="this.src='/static/admin/images/noimg.png'"/></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">网站域名：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_host]" value="{$config.web_host}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>网站域名 例子：baidu.com</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">网站描述：</label>
+            <div class="input-group col-sm-4">
+                <textarea class="form-control" type="text" rows="3" name="config[web_site_description]">{$config.web_site_description}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>网站搜索引擎描述</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">网站关键字：</label>
+            <div class="input-group col-sm-4">
+                <textarea class="form-control" type="text" rows="3" name="config[web_site_keyword]">{$config.web_site_keyword}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>网站搜索引擎关键字</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">网站备案号：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_site_icp]" value="{$config.web_site_icp}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置在网站底部显示的备案号</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">统计代码：</label>
+            <div class="input-group col-sm-4">
+                <textarea class="form-control" type="text" rows="3" name="config[web_site_cnzz]">{$config.web_site_cnzz}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置在网站底部显示的站长统计信息</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">版权信息：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_site_copy]" value="{$config.web_site_copy}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置在网站底部显示的版权信息</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">联系QQ：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_qq]" value="{$config.web_qq}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置联系QQ</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">联系电话：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_mobile]" value="{$config.web_mobile}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置联系电话</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">联系旺旺：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_wangwang]" value="{$config.web_wangwang}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>设置联系旺旺</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">站点状态：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[web_site_close]">
+                    <option value="1" {if condition="$config['web_site_close'] eq 1 "}selected{/if}>开启</option>
+                    <option value="0" {if condition="$config['web_site_close'] eq 0 "}selected{/if}>关闭</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>站点关闭后除管理员外所有人访问不了后台</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript" src="/static/admin/webupload/webuploader.min.js"></script>
+<script type="text/javascript">
+var _uploadUrl = "{:url('Upload/uploadico')}";
+{literal}
+var uploader=new Array();
+$("div[id=imgPicker]").each(function(index){
+    var $list = $(this).prev();
+    if(index==0){ var thumbnailWidth=413; var thumbnailHeight=74; }
+    else{ var thumbnailWidth=200; var thumbnailHeight=200; }
+    var data_photo=$(this).parent('div').eq(0).find('input');
+    var img_data=$(this).next().next().children("img");
+    uploader[index] = WebUploader.create({
+        auto:true, swf:'/static/admin/webupload/Uploader.swf',
+        server:_uploadUrl, duplicate:true, pick:$(this),
+        accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png,ico',mimeTypes:'image/*'},
+        'onUploadSuccess':function(file,data,response){
+            data_photo.val(data._raw);
+            img_data.attr('src','/uploads/images/'+data._raw).show();
+        }
+    });
+    uploader[index].on('fileQueued',function(file){
+        var $li=$('<div id="'+file.id+'" class="file-item thumbnail"><img><div class="info">'+file.name+'</div></div>'),$img=$li.find('img');
+        uploader[index].makeThumb(file,function(error,src){if(error)return;},thumbnailWidth,thumbnailHeight);
+    });
+    uploader[index].on('uploadProgress',function(file,percentage){
+        var $li=$('#'+file.id),$percent=$li.find('.progress span');
+        if(!$percent.length){$percent=$('<p class="progress"><span></span></p>').appendTo($li).find('span');}
+        $percent.css('width',percentage*100+'%');
+    });
+    uploader[index].on('uploadSuccess',function(file){layer.alert("上传成功",{offset:'250px',icon:1});});
+    uploader[index].on('uploadError',function(file){$('#'+file.id).find('p.state').text('上传出错!');});
+    uploader[index].on('uploadComplete',function(file){$('#'+file.id).find('.progress').remove();});
+});
+$(function(){
+    $('button[name=deleteimg]').click(function(){
+        $(this).parent('div').parent('div').find("input").val("");
+        layer.msg('删除成功，保存配置即可生效');
+    });
+});
+{/literal}
+</script>
+</body>
+</html>

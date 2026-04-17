@@ -1,0 +1,132 @@
+{extend name="public/layout" /}
+{block name="content"}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px;margin-bottom:10px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+.g-info-panel{background:#fff;border-radius:6px;border:1px solid #e8e8e8}
+.g-info-head{padding:10px 16px;font-size:13px;font-weight:600;border-bottom:1px solid #e8e8e8;color:#3b82f6}
+.g-info-body{padding:12px 16px;font-size:13px;color:#334155;line-height:1.8}
+.g-table-wrap{overflow-x:auto;margin:10px 0}
+.g-table{width:100%;border-collapse:collapse;font-size:12px}
+.g-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0}
+.g-table td{padding:5px 10px;border-bottom:1px solid #f1f5f9;color:#334155}
+</style>
+{/literal}
+<div class="g-page">
+
+<div class="g-form-wrap">
+    <div class="g-form-title">
+        <span>添加API秘钥</span>
+        <a class="btn btn-default btn-sm" href="{:url('index')}"><i class="fa fa-arrow-left"></i> 返回列表</a>
+    </div>
+    <form class="form-horizontal" id="apikey-form">
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span class="text-danger">*</span> 应用名称：</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="app_name" placeholder="请输入应用名称" required>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>应用的唯一标识名称，2-50个字符</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述：</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="description" rows="3" placeholder="请输入应用描述（可选）"></textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>应用的详细说明，最多200个字符</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">IP白名单：</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="allowed_ips" rows="2" placeholder="请输入允许访问的IP地址，多个IP用逗号分隔（可选）"></textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>留空表示不限制IP，多个IP用英文逗号分隔，例如：192.168.1.100,203.208.60.1</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">每日调用限制：</label>
+            <div class="col-sm-6">
+                <input type="number" class="form-control" name="daily_limit" value="0" min="0" placeholder="0表示不限制">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>每日最大调用次数，0表示不限制</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存</button>
+                <a class="btn btn-default" href="{:url('index')}"><i class="fa fa-times"></i> 取消</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="g-info-panel">
+    <div class="g-info-head"><i class="fa fa-info-circle"></i> API使用说明</div>
+    <div class="g-info-body">
+        <p><strong>重要提示：</strong></p>
+        <p>1. 创建后将自动生成 <strong>AppID</strong> 和 <strong>AppSecret</strong>，请妥善保管</p>
+        <p>2. AppSecret 只在创建时显示一次，请立即复制保存</p>
+        <p>3. 所有API请求都需要携带有效的AppID和AppSecret进行身份验证</p>
+        <p>4. 如果设置了IP白名单，则只有白名单内的IP才能调用API</p>
+
+        <h4 style="margin-top:14px;">API接口列表：</h4>
+        <div class="g-table-wrap">
+            <table class="g-table">
+                <thead>
+                    <tr><th>接口名称</th><th>请求方式</th><th>接口地址</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>获取商品列表</td><td>GET</td><td>/api/goods/getGoodsList</td><td>分页获取商品列表，支持分类和关键词搜索</td></tr>
+                    <tr><td>获取商品详情</td><td>GET</td><td>/api/goods/getGoodsDetail</td><td>根据商品ID获取商品详细信息</td></tr>
+                    <tr><td>创建订单</td><td>POST</td><td>/api/goods/createOrder</td><td>根据商品ID创建购买订单</td></tr>
+                    <tr><td>获取订单状态</td><td>GET</td><td>/api/goods/getOrderStatus</td><td>根据订单号查询订单状态和卡密信息</td></tr>
+                    <tr><td>获取支付二维码</td><td>POST</td><td>/api/goods/getPaymentQRCode</td><td>生成支付宝或微信支付二维码</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4 style="margin-top:14px;">基础参数说明：</h4>
+        <p>所有API请求都需要包含以下基础参数：</p>
+        <ul>
+            <li><code>app_id</code>：应用ID，创建API秘钥后获得</li>
+            <li><code>app_secret</code>：应用秘钥，创建API秘钥后获得</li>
+        </ul>
+        <p>响应格式统一为JSON：</p>
+        <pre style="background:#f8fafc;padding:10px;border-radius:4px;font-size:12px">{
+  "code": 1,
+  "msg": "操作成功",
+  "data": {},
+  "timestamp": 1234567890
+}</pre>
+    </div>
+</div>
+
+</div>
+
+<script>
+$(function(){
+    $('#apikey-form').on('submit', function(e){
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: '{:url("add")}',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            beforeSend: function(){ $('button[type="submit"]').prop('disabled',true).html('<i class="fa fa-spinner fa-spin"></i> 保存中...'); },
+            success: function(res){
+                if(res.code==1){
+                    layer.alert('API秘钥创建成功！<br>请立即复制保存以下信息：', {title:'创建成功',btn:['查看详情'],yes:function(){ window.location.href='{:url("index")}'; }});
+                }else{ layer.msg(res.msg,{icon:2}); }
+            },
+            error: function(){ layer.msg('网络错误，请稍后重试',{icon:2}); },
+            complete: function(){ $('button[type="submit"]').prop('disabled',false).html('<i class="fa fa-save"></i> 保存'); }
+        });
+    });
+    $('input[name="app_name"]').on('blur', function(){ var v=$(this).val().trim(); if(v.length<2||v.length>50) layer.tips('应用名称长度必须在2-50个字符之间',this,{tips:1}); });
+    $('textarea[name="description"]').on('input', function(){ if($(this).val().length>200) layer.tips('描述长度不能超过200个字符',this,{tips:1}); });
+    $('input[name="daily_limit"]').on('change', function(){ if(parseInt($(this).val())<0){ $(this).val(0); layer.tips('每日调用限制不能为负数',this,{tips:1}); } });
+});
+</script>
+{/block}

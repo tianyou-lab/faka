@@ -1,0 +1,69 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">图片上传配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">上传方式：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[uploadtype]">
+                    <option value="0" {if condition="$config['uploadtype'] eq 0"}selected{/if}>本地存储</option>
+                    <option value="1" {if condition="$config['uploadtype'] eq 1"}selected{/if}>七牛云存储</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i> 注意：选择七牛云存储方式需要配置下面的参数</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">七牛云AK：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[qiniu_ak]" value="{$config.qiniu_ak}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> <a href="http://www.qiniu.com" target="_blank">七牛云官方地址</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">七牛云SK：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[qiniu_sk]" value="{$config.qiniu_sk}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> <a href="http://www.qiniu.com" target="_blank">七牛云官方地址</a></div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">七牛云Bucket：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[qiniu_bucket]" value="{$config.qiniu_bucket}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> 对象存储空间名字</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">七牛云domain：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[qiniu_domain]" value="{$config.qiniu_domain}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i> 七牛云绑定域名 例子：http://img.baidu.com 记得一定要带上http://</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

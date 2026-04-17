@@ -1,0 +1,172 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">前端配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">公共静态资源：</label>
+            <div class="input-group col-sm-4">
+                <input type="hidden" name='config[cdnpublic]' value="/static/cdn/">
+                <span class="form-control" style="background:#f5f5f5;">本地加载 (/static/cdn/)</span>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>已优化为本地加载，无需CDN</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">联系手机：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[lianxi_mobile]">
+                    <option value="1" {if condition="$config['lianxi_mobile'] eq 1 "}selected{/if}>必填</option>
+                    <option value="0" {if condition="$config['lianxi_mobile'] eq 0 "}selected{/if}>选填</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>必填：需要强制填写  选填：不强制填写</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">联系邮箱：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[lianxi_email]">
+                    <option value="1" {if condition="$config['lianxi_email'] eq 1 "}selected{/if}>必填</option>
+                    <option value="0" {if condition="$config['lianxi_email'] eq 0 "}selected{/if}>选填</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>必填：需要强制填写  选填：不强制填写</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">历史提货显示：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[web_lishi]">
+                    {if condition="$config['web_lishi'] eq 0 "}
+                    <option value="0" selected>头部显示</option>
+                    <option value="1">尾部显示</option>
+                    <option value="2">不显示</option>
+                    {elseif condition="$config['web_lishi'] eq 1 "/}
+                    <option value="0">头部显示</option>
+                    <option value="1" selected>尾部显示</option>
+                    <option value="2">不显示</option>
+                    {elseif condition="$config['web_lishi'] eq 2 "/}
+                    <option value="0">头部显示</option>
+                    <option value="1">尾部显示</option>
+                    <option value="2" selected>不显示</option>
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">手机版本显示：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[m_status]">
+                    {if condition="$config['m_status'] eq 0 "}
+                    <option value="0" selected>提示进入</option>
+                    <option value="1">直接进入</option>
+                    <option value="2">不启用</option>
+                    {elseif condition="$config['m_status'] eq 1 "/}
+                    <option value="0">提示进入</option>
+                    <option value="1" selected>直接进入</option>
+                    <option value="2">不启用</option>
+                    {elseif condition="$config['m_status'] eq 2 "/}
+                    <option value="0">提示进入</option>
+                    <option value="1">直接进入</option>
+                    <option value="2" selected>不启用</option>
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">卡密头部显示附加信息：</label>
+            <div class="col-sm-8">
+                <textarea name="config[kami_tou]" id="myEditortou">{$config.kami_tou}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>在卡密显示头部附加信息，可以为空</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">卡密尾部显示附加信息：</label>
+            <div class="col-sm-8">
+                <textarea name="config[kami_wei]" id="myEditorwei">{$config.kami_wei}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>在卡密显示尾部附加信息，可以为空</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">首页公告内容：</label>
+            <div class="col-sm-8">
+                <textarea name="config[home_notice_content]" id="myEditorNotice">{$config.home_notice_content|default=''}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>用于首页顶部黄色公告条与弹窗公告，支持富文本</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">首页自动弹出公告：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[tangg]">
+                    <option value="1" {if condition="$config['tangg'] eq 1 "}selected{/if}>开启</option>
+                    <option value="0" {if condition="$config['tangg'] eq 0 "}selected{/if}>关闭</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>首页自动弹出公告</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">弹出公告时间间隔：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[tanggjiange]" value="{$config.tanggjiange}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>自动弹出公告时间间隔 单位：秒</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<link rel="stylesheet" href="/static/admin/tinymce6/skins/ui/oxide/skin.min.css">
+<script src="/static/admin/tinymce6/tinymce.min.js"></script>
+<script>
+tinymce.init({
+    selector: '#myEditortou,#myEditorwei,#myEditorNotice',
+    language: 'zh-Hans',
+    language_url: '/static/admin/tinymce6/langs/zh-Hans.js',
+    skin: false,
+    content_css: '/static/admin/tinymce6/skins/content/default/content.min.css',
+    height: 200,
+    menubar: false,
+    branding: false,
+    plugins: 'link image code',
+    toolbar: 'undo redo | bold italic underline | forecolor backcolor | link image | code',
+    images_upload_url: "{:url('Ueditor/doupload')}?action=uploadimage",
+    images_upload_credentials: true,
+    automatic_uploads: true,
+    images_upload_handler: function(blobInfo, success, failure) {
+        var formData = new FormData();
+        formData.append('upfile', blobInfo.blob(), blobInfo.filename());
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "{:url('Ueditor/doupload')}?action=uploadimage");
+        xhr.onload = function() {
+            if (xhr.status !== 200) { failure('上传失败: ' + xhr.status); return; }
+            var json = JSON.parse(xhr.responseText);
+            if (json.state === 'SUCCESS') { success(json.url); } else { failure('上传失败: ' + json.state); }
+        };
+        xhr.send(formData);
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+# Apache配置文件 - 性能优化
+# 请确保Apache已启用相关模块：mod_rewrite, mod_expires, mod_deflate, mod_headers
+
+# 开启URL重写
+RewriteEngine On
+
+# 隐藏index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+
+# ================================
+# 性能优化配置
+# ================================
+
+# 启用Gzip压缩
+<IfModule mod_deflate.c>
+    # 压缩文本文件
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/font-woff
+    AddOutputFilterByType DEFLATE application/font-woff2
+    
+    # 排除已压缩的文件
+    SetEnvIfNoCase Request_URI \
+        \.(?:gif|jpe?g|png|zip|gz|bz2|rar|7z)$ no-gzip dont-vary
+    SetEnvIfNoCase Request_URI \
+        \.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+</IfModule>
+
+# 设置缓存过期时间
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # 图片文件缓存1个月
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/ico "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 month"
+    
+    # CSS和JS文件缓存1周
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-javascript "access plus 1 week"
+    ExpiresByType text/javascript "access plus 1 week"
+    
+    # 字体文件缓存1个月
+    ExpiresByType application/font-woff "access plus 1 month"
+    ExpiresByType application/font-woff2 "access plus 1 month"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 month"
+    ExpiresByType font/truetype "access plus 1 month"
+    
+    # HTML文件缓存1小时
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # 其他文件默认缓存1天
+    ExpiresDefault "access plus 1 day"
+</IfModule>
+
+# 设置缓存控制头
+<IfModule mod_headers.c>
+    # 为静态资源添加缓存头
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+    
+    # 为HTML文件设置较短的缓存时间
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "max-age=3600, public"
+    </FilesMatch>
+    
+    # 安全头设置
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # 移除服务器信息
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
+# ================================
+# 安全配置
+# ================================
+
+# 防止访问敏感文件
+<FilesMatch "\.(env|log|sql|md|txt)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 防止访问配置文件
+<FilesMatch "^(config|database|conn)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 防止访问备份文件
+<FilesMatch "\.(bak|backup|old|orig|original|tmp)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 防止直接访问PHP文件（除了入口文件）
+<FilesMatch "\.php$">
+    <If "%{REQUEST_URI} !~ m#^/(index|admin|mobile|jingdian|integral|madmin|pay)\.php#">
+        Order allow,deny
+        Deny from all
+    </If>
+</FilesMatch>
+
+# 防止目录浏览
+Options -Indexes
+
+# 防止访问隐藏文件
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ================================
+# 性能优化规则
+# ================================
+
+# 启用KeepAlive连接
+<IfModule mod_headers.c>
+    Header set Connection keep-alive
+</IfModule>
+
+# 优化文件传输
+<IfModule mod_mime.c>
+    # 正确的MIME类型
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType image/x-icon .ico
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+    AddType application/font-woff .woff
+    AddType application/font-woff2 .woff2
+</IfModule>
+
+# 限制请求大小（防止大文件上传攻击）
+LimitRequestBody 52428800
+
+# 设置默认字符集
+AddDefaultCharset UTF-8

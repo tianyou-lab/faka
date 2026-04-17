@@ -1,0 +1,303 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/webupload/style.css">
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.file-item{float:left;position:relative;width:110px;height:110px;margin:0 20px 20px 0;padding:4px}
+.file-item .info{overflow:hidden}
+.uploader-list{width:100%;overflow:hidden}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">编辑商品</div>
+    <form class="form-horizontal" name="edit_member" id="edit_member" method="post" action="{:url('edit_member')}">
+        <input type="hidden" name="id" value="{$member.id}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品分类：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control m-b chosen-select" name="mlm" id="mlm">
+                    <option value="">==请选择分类==</option>
+                    {if !empty($group)}
+                        {foreach name="group" item="vo"}
+                            <option value="{$vo.id}" {if condition="$member['mlm'] eq $vo['id']"}selected{/if}>{$vo.name}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">发货类型：</label>
+            <div class="col-sm-6">
+                <div class="radio i-checks">
+                    <input type="radio" name='type' value="{$member['type']}" checked/>
+                    {if condition="$member['type'] eq 0 "}自动发货{else/}手动发货{/if}
+                </div>
+            </div>
+        </div>
+        {if condition="$member['type'] neq 0"}
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">附加选项：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control m-b chosen-select" name="attachgroupid" id="attachgroupid">
+                    <option value="">==请选择附加选项==</option>
+                    {if !empty($attach_group)}
+                        {foreach name="attach_group" item="vo"}
+                            <option value="{$vo.id}" {if condition="$member['attachgroupid'] eq $vo['id']"}selected{/if}>{$vo.name}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+        {/if}
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品名称：</label>
+            <div class="input-group col-sm-4">
+                <input id="mname" type="text" class="form-control" name="mname" value="{:htmlspecialchars($member.mname)}" placeholder="请输入商品名称">
+                <span style="margin-top:5px;float:left;visibility:hidden">{:htmlspecialchars_decode($member['mname'])}</span>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品提示：</label>
+            <div class="input-group col-sm-4">
+                <input id="mnotice" type="text" class="form-control" name="mnotice" value="{:htmlspecialchars($member.mnotice)}" placeholder="请输入提示信息">
+                <span style="margin-top:5px;float:left;visibility:hidden">{:htmlspecialchars_decode($member['mnotice'])}</span>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品买前弹窗提示：</label>
+            <div class="input-group col-sm-4">
+                <input id="msgboxtip" type="text" class="form-control" name="msgboxtip" value="{:htmlspecialchars($member.msgboxtip)}" placeholder="用于商品发生变化，买前给客户弹窗提示">
+                <span style="margin-top:5px;float:left;visibility:hidden">{:htmlspecialchars_decode($member['mnotice'])}</span>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品图片：</label>
+            <div class="input-group col-sm-4">
+                {if condition="config('uploadtype') eq 0"}
+                <input type="hidden" id="data_photo" name="imgurl" value="{$member.valueimgurl}">
+                {else/}
+                <input type="hidden" id="data_photo" name="yunimgurl" value="{$member.valueimgurl}">
+                {/if}
+                <div id="fileList" class="uploader-list" style="float:right"></div>
+                <div id="imgPicker" style="float:left">选择图片</div>
+                <img id="img_data" height="250px" width="250px" style="float:left;margin-left:50px;margin-top:-10px;" src="{$member.imgurl}" onerror="this.src='/static/admin/images/head_default.gif'"/>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="myEditor">商品详情：</label>
+            <div class="input-group col-sm-9">
+                <textarea name="xqnotice" id="myEditor">{$member.xqnotice}</textarea>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">默认价格(元)：</label>
+            <div class="input-group col-sm-4">
+                {if condition="$member.mprice lt 1"}
+                <input id="mprice" type="text" class="form-control" name="mprice" value="{:number_format($member.mprice/100,4,'.','')}" placeholder="请输入默认价格">
+                {else/}
+                <input id="mprice" type="text" class="form-control" name="mprice" value="{:number_format($member.mprice/100,2,'.','')}" placeholder="请输入默认价格">
+                {/if}
+                <span class="label label-danger" style="margin-top:5px;float:left;visibility:hidden">价格单位是元，填写1就是一个卡密就是1元,支持四位小数0.0001</span>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">最少购买：</label>
+            <div class="input-group col-sm-4">
+                <input id="mmin" type="text" class="form-control" name="mmin" value="{$member.mmin}" placeholder="请输入最小购买">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">最大购买：</label>
+            <div class="input-group col-sm-4">
+                <input id="mmax" type="text" class="form-control" name="mmax" value="{$member.mmax}" placeholder="请输入最大购买">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">发货倍数：</label>
+            <div class="input-group col-sm-4">
+                <input id="sendbeishu" type="number" min="1" class="form-control" name="sendbeishu" value="{$member.sendbeishu}" placeholder="请输入发货倍数">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">状&nbsp;态：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="status" id="status">
+                    <option value="1" {if condition="$member['status'] eq 1 "}selected{/if}>开启</option>
+                    <option value="0" {if condition="$member['status'] eq 0 "}selected{/if}>关闭</option>
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">排序：</label>
+            <div class="input-group col-sm-4">
+                <input id="sort" type="text" class="form-control" name="sort" value="{$member.sort}" placeholder="请输入排序">
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <label>
+                <span class="label label-default" id="enableyh" data-rel="tooltip" title="" data-original-title="Default"><i class="fa fa-plus-square"></i>添加优惠</span>
+                </label>
+            </div>
+        </div>
+        {if !empty($yh)}
+            {foreach name="yh" item="vo"}
+                <input name='mdy[{$vo.id}][id]' type='hidden' value='{$vo.id}'>
+                {if condition="$vo.mdj lt 1"}
+                <p style='margin:0 auto 0 26%;'>数量大于<input name='mdy[{$vo.id}][mdy]' type='text' style='width:50px;text-align:center;' value='{$vo.mdy}'> 个,单价为 <input name='mdy[{$vo.id}][mdj]' type='text' style='width:50px;text-align:center;' value='{:number_format($vo.mdj/100,4,".","")}'> 元 <a href="javascript:;" onclick="del_yh({$vo.id},{$member.id})" class='btn btn-danger btn-outline btn-xs'><i class='fa fa-trash-o'></i>删除</a><br><br></p>
+                {else/}
+                <p style='margin:0 auto 0 26%;'>数量大于<input name='mdy[{$vo.id}][mdy]' type='text' style='width:50px;text-align:center;' value='{$vo.mdy}'> 个,单价为 <input name='mdy[{$vo.id}][mdj]' type='text' style='width:50px;text-align:center;' value='{:number_format($vo.mdj/100,4,".","")}'> 元 <a href="javascript:;" onclick="del_yh({$vo.id},{$member.id})" class='btn btn-danger btn-outline btn-xs'><i class='fa fa-trash-o'></i>删除</a><br><br></p>
+                {/if}
+            {/foreach}
+        {/if}
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript" src="/static/admin/webupload/webuploader.min.js"></script>
+<script src="/static/admin/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+tinymce.init({
+    selector: '#myEditor',
+    language: 'zh_CN',
+    height: 400,
+    menubar: false,
+    branding: false,
+    promotion: false,
+    plugins: 'image link lists table code fullscreen charmap preview wordcount',
+    toolbar: 'undo redo | styles | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright | bullist numlist | link image table | code fullscreen',
+    placeholder: '请输入商品详情...',
+    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }',
+    setup: function(editor) {
+        editor.on('change keyup', function() { editor.save(); });
+    },
+    images_upload_handler: function(blobInfo) {
+        return new Promise(function(resolve, reject) {
+            var formData = new FormData();
+            formData.append('upfile', blobInfo.blob(), blobInfo.filename());
+            $.ajax({
+                url: "{:url('Ueditor/doupload')}?action=uploadimage",
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (typeof data === 'string') data = JSON.parse(data);
+                    if (data.state === 'SUCCESS') { resolve(data.url); }
+                    else { reject('图片上传失败: ' + data.state); }
+                },
+                error: function() { reject('图片上传失败'); }
+            });
+        });
+    }
+});
+
+var $list = $('#fileList');
+var uploader = WebUploader.create({
+    auto: true,
+    swf: '/static/admin/webupload/Uploader.swf',
+    server:{if condition="config('uploadtype') eq 0"} "{:url('Upload/uploadface')}"{else/}"{:url('Upload/Qiniuupload')}"{/if},
+    duplicate: true,
+    pick: '#imgPicker',
+    compress: false,
+    resize: false,
+    accept: {
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,bmp,png',
+        mimeTypes: 'image/jpg,image/jpeg,image/png'
+    },
+    'onUploadSuccess': function(file, data, response) {
+        $("#data_photo").val(data._raw);
+        {if condition="config('uploadtype') eq 0"}
+        $("#img_data").attr('src', '/uploads/face/' + data._raw).show();
+        {else/}
+        $("#img_data").attr('src', "{:config('qiniu_domain')}/"+data._raw).show();
+        {/if}
+    }
+});
+uploader.on('fileQueued', function(file) {
+    $list.html('<div id="' + file.id + '" class="item"><h4 class="info">' + file.name + '</h4><p class="state">正在上传...</p></div>');
+});
+uploader.on('uploadSuccess', function(file) { $('#'+file.id).find('p.state').text('上传成功！'); });
+uploader.on('uploadError', function(file) { $('#'+file.id).find('p.state').text('上传出错!'); });
+
+$(function(){
+    $('#edit_member').ajaxForm({
+        beforeSerialize: function($form, options) { tinymce.triggerSave(); },
+        beforeSubmit: function(){
+            if(''==$.trim($('#mname').val())){
+                layer.msg('请输入商品名称',{icon:2,time:1500,shade:0.1},function(){ $('#mname').focus(); });
+                return false;
+            }
+            if(''==$.trim($('#mprice').val())){
+                layer.msg('请输入默认价格',{icon:2,time:1500,shade:0.1},function(){ $('#mprice').focus(); });
+                return false;
+            }
+            if(''==$.trim($('#mmin').val())){
+                layer.msg('请输入最小购买数',{icon:2,time:1500,shade:0.1},function(){ $('#mmin').focus(); });
+                return false;
+            }
+            if(''==$.trim($('#mmax').val())){
+                layer.msg('请输入最大购买数量',{icon:2,time:1500,shade:0.1},function(){ $('#mmax').focus(); });
+                return false;
+            }
+            if(''==$.trim($("select[name=mlm]").val())){
+                layer.msg('请选择分类',{icon:2,time:1500,shade:0.1},function(){ $('select[name=mlm]').focus(); });
+                return false;
+            }
+            if('1'==$.trim($("input[name='type']:checked").val())){
+                if(''==$.trim($("select[name=attachgroupid]").val())){
+                    layer.msg('请选择附加选项分类',{icon:2,time:1500,shade:0.1},function(){ $('select[name=attachgroupid]').focus(); });
+                    return false;
+                }
+            }
+        },
+        success: function(data){
+            if(data.code==1){
+                layer.msg(data.msg,{icon:6,time:1500,shade:0.1},function(){ window.location.href="{:url('category/index')}"; });
+            }else{
+                layer.msg(data.msg,{icon:5,time:1500,shade:0.1});
+                return false;
+            }
+        },
+        dataType:'json'
+    });
+});
+
+$('#enableyh').click(function(){
+    $(this).parent().parent().parent().after('<p style="margin:0 auto 0 26%;">数量大于<input name=mdy1[] type="text" style="width:50px;text-align:center;"> 个,单价为 <input name="mdj1[]" type="text" style="width:50px;text-align:center;"> 元 <a class="btn btn-danger btn-outline btn-xs"><i class="fa fa-trash-o"></i>删除</a><br><br></p>');
+});
+$('.form-control').mousemove(function(){
+    $(this).parent('div').find('span').css('visibility','visible');
+}).mouseout(function(){
+    $(this).parent('div').find('span').css('visibility','hidden');
+});
+function del_yh(id,mpid){ lunhui.confirma(id,mpid,'{:url("del_yh")}'); }
+</script>
+</body>
+</html>

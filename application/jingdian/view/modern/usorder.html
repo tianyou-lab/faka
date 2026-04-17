@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - {:config('shop_name')}</title>
+    <link rel="stylesheet" href="/static/modern/css/style.css?v=20260221-order">
+    <link rel="stylesheet" href="/static/cdn/layer/2.2/skin/default/layer.css">
+    <style>
+    .uc-wrap { max-width: 960px; margin: 32px auto; padding: 0 20px; }
+    .uc-page-title { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .uc-page-title a { font-size: 14px; font-weight: 500; color: var(--primary); }
+    .uc-filter { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .uc-filter-input { height: 40px; padding: 0 14px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 14px; color: var(--gray-800); background: #fff; width: 240px; }
+    .uc-filter-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .uc-filter-btn { height: 40px; padding: 0 20px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; }
+    .uc-filter-btn:hover { background: var(--primary-dark); }
+    .uc-filter-tabs { display: flex; gap: 6px; }
+    .uc-filter-tab { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--gray-600); background: #fff; border: 1px solid var(--gray-200); cursor: pointer; text-decoration: none; transition: all .2s; }
+    .uc-filter-tab:hover, .uc-filter-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .uc-orders { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--gray-100); }
+    .uc-order-item { display: flex; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--gray-50); transition: background .2s; }
+    .uc-order-item:last-child { border-bottom: none; }
+    .uc-order-item:hover { background: var(--gray-50); }
+    .uc-order-name { flex: 1; min-width: 0; }
+    .uc-order-name-text { font-size: 14px; font-weight: 500; color: var(--gray-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .uc-order-no { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .uc-order-amount { font-size: 15px; font-weight: 600; color: var(--danger); min-width: 80px; text-align: right; margin: 0 16px; }
+    .uc-order-status { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 500; min-width: 60px; text-align: center; }
+    .uc-status-pending { background: #fef3c7; color: #92400e; }
+    .uc-status-done { background: #dcfce7; color: #166534; }
+    .uc-status-unpaid { background: #fee2e2; color: #991b1b; }
+    .uc-status-process { background: #dbeafe; color: #1e40af; }
+    .uc-order-time { font-size: 12px; color: var(--gray-400); min-width: 120px; text-align: right; margin-left: 16px; }
+    .uc-order-action { margin-left: 12px; }
+    .uc-order-action a { font-size: 12px; padding: 4px 12px; border-radius: 6px; background: var(--primary); color: #fff; text-decoration: none; white-space: nowrap; }
+    .uc-order-action a:hover { background: var(--primary-dark); color: #fff; }
+    .uc-empty { text-align: center; padding: 60px 24px; color: var(--gray-400); font-size: 14px; }
+    .uc-empty .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+    .uc-pager { display: flex; justify-content: center; gap: 8px; padding: 20px; }
+    .uc-pager a, .uc-pager span { padding: 6px 14px; border-radius: 6px; font-size: 13px; border: 1px solid var(--gray-200); color: var(--gray-600); text-decoration: none; }
+    .uc-pager span.current { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .uc-pager a:hover { border-color: var(--primary); color: var(--primary); }
+    @media (max-width: 640px) {
+        .uc-order-time { display: none; }
+        .uc-filter-input { width: 100%; }
+    }
+    </style>
+</head>
+<body>
+
+<header class="mod-header">
+    <div class="container mod-header-inner">
+        <div class="mod-logo">
+            <div class="mod-logo-icon">F</div>
+            <span>{:config('shop_name')}</span>
+        </div>
+        <nav class="mod-nav">
+            <a href="{:url('Index/index')}">首页</a>
+            <a href="{:url('User/uscenter')}">个人中心</a>
+        </nav>
+        <div class="mod-user-link">
+            <a href="{:url('User/logout')}">退出登录</a>
+        </div>
+    </div>
+</header>
+
+<div class="uc-wrap">
+    <div class="uc-page-title">
+        📋 我的订单
+        <a href="{:url('User/uscenter')}">← 返回个人中心</a>
+    </div>
+
+    <div class="uc-filter">
+        <input type="text" class="uc-filter-input" id="search_mcard" placeholder="输入订单号搜索" value="{$mcard}">
+        <button class="uc-filter-btn" onclick="searchOrder()">搜索</button>
+        <div class="uc-filter-tabs">
+            <a href="{:url('user/usorder',['mstatus'=>999])}" class="uc-filter-tab {if condition='$mstatus eq 999'}active{/if}">全部</a>
+            <a href="{:url('user/usorder',['mstatus'=>888])}" class="uc-filter-tab {if condition='$mstatus eq 888'}active{/if}">交易中</a>
+            <a href="{:url('user/usorder',['mstatus'=>5])}" class="uc-filter-tab {if condition='$mstatus eq 5'}active{/if}">已完成</a>
+            <a href="{:url('user/usorder',['mstatus'=>2])}" class="uc-filter-tab {if condition='$mstatus eq 2'}active{/if}">未付款</a>
+        </div>
+    </div>
+
+    <div class="uc-orders" id="order-list">
+        {if condition="$count gt 0"}
+        {volist name="val" id="vo" key="k"}
+        <div class="uc-order-item">
+            <div class="uc-order-name">
+                <div class="uc-order-name-text">{:htmlspecialchars_decode($vo['name'])}</div>
+                <div class="uc-order-no">{$vo.mcard}</div>
+            </div>
+            <div class="uc-order-amount">¥{$vo.mamount}</div>
+            <div class="uc-order-status {if condition="$vo.mstatus eq 1 or $vo.mstatus eq 4 or $vo.mstatus eq 5"}uc-status-done{elseif condition="$vo.mstatus eq 2"/}uc-status-unpaid{elseif condition="$vo.mstatus eq 0"/}uc-status-pending{else/}uc-status-process{/if}">
+                {if condition="$vo.type eq 0"}
+                    {if condition="$vo.mstatus eq 0 and $vo.mflid eq 0"}未使用{elseif condition="$vo.mstatus eq 0 and $vo.mflid neq 0"/}未提取{elseif condition="$vo.mstatus eq 1"/}已提取{elseif condition="$vo.mstatus eq 2"/}未付款{/if}
+                {elseif condition="$vo.type eq 1"/}
+                    {if condition="$vo.mstatus eq 0 or $vo.mstatus eq 1"}待发货{elseif condition="$vo.mstatus eq 2"/}未付款{elseif condition="$vo.mstatus eq 3"/}进行中{elseif condition="$vo.mstatus eq 4"/}已取消{elseif condition="$vo.mstatus eq 5"/}已发货{/if}
+                {/if}
+            </div>
+            <div class="uc-order-time">{:is_numeric($vo['create_time']) ? date("Y-m-d H:i", intval($vo['create_time'])) : (strtotime($vo['create_time']) ? date("Y-m-d H:i", strtotime($vo['create_time'])) : $vo['create_time'])}</div>
+            <div class="uc-order-action">
+                {if condition="$vo.type eq 0"}
+                    {if condition="$vo.mstatus eq 0 and $vo.mflid neq 0"}
+                    <a href="{:url('@jingdian/Getmail/index')}?mpid={$vo.mflid}&number={$vo.mcard}">提取卡密</a>
+                    {elseif condition="$vo.mstatus eq 1"/}
+                    <a href="{:url('@jingdian/Getmail/index')}?mpid={$vo.mflid}&number={$vo.mcard}">查看卡密</a>
+                    {/if}
+                {elseif condition="$vo.type eq 1"/}
+                    {if condition="$vo.mstatus eq 0 and $vo.mflid neq 0"}
+                    <a href="{:url('@jingdian/Getmail/index')}?mpid={$vo.mflid}&number={$vo.mcard}">确定购买</a>
+                    {else/}
+                    <a href="{:url('Order/getOrderDetailByOrder')}?number={$vo.mcard}">查看详情</a>
+                    {/if}
+                {/if}
+            </div>
+        </div>
+        {/volist}
+        {else/}
+        <div class="uc-empty">
+            <span class="icon">📦</span>
+            暂无订单，<a href="{:url('Index/index')}">去逛逛</a>
+        </div>
+        {/if}
+    </div>
+
+    {if condition="$allpage gt 1"}
+    <div class="uc-pager">
+        {if condition="$Nowpage gt 1"}
+        <a href="{:url('user/usorder',['mstatus'=>$mstatus,'mcard'=>$mcard,'page'=>$Nowpage-1])}">上一页</a>
+        {/if}
+        <span class="current">{$Nowpage} / {$allpage}</span>
+        {if condition="$Nowpage lt $allpage"}
+        <a href="{:url('user/usorder',['mstatus'=>$mstatus,'mcard'=>$mcard,'page'=>$Nowpage+1])}">下一页</a>
+        {/if}
+    </div>
+    {/if}
+</div>
+
+<script src="/static/cdn/jquery/2.1.4/jquery.min.js"></script>
+<script src="/static/cdn/layer/2.2/layer.js"></script>
+<script>
+function searchOrder(){
+    var mcard = $.trim($('#search_mcard').val());
+    location.href = "{:url('user/usorder')}" + "?mcard=" + encodeURIComponent(mcard) + "&mstatus={$mstatus}";
+}
+$('#search_mcard').on('keypress', function(e){ if(e.which===13) searchOrder(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">会员注册</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">会员注册模式：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[web_reg_type]">
+                    {if condition="$config['web_reg_type'] eq 0 "}
+                    <option value="0" selected>非会员模式（不需要注册会员也不能注册）</option>
+                    <option value="1">强制会员模式（必须注册才能购买）</option>
+                    <option value="2">自由会员模式（可以注册购买，也可以不注册购买）</option>
+                    {elseif condition="$config['web_reg_type'] eq 1 "/}
+                    <option value="0">非会员模式（不需要注册会员也不能注册）</option>
+                    <option value="1" selected>强制会员模式（必须注册才能购买）</option>
+                    <option value="2">自由会员模式（可以注册购买，也可以不注册购买）</option>
+                    {elseif condition="$config['web_reg_type'] eq 2 "/}
+                    <option value="0">非会员模式（不需要注册会员也不能注册）</option>
+                    <option value="1">强制会员模式（必须注册才能购买）</option>
+                    <option value="2" selected>自由会员模式（可以注册购买，也可以不注册购买）</option>
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">会员注册形式：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[web_reg_xingshi]">
+                    {if condition="$config['web_reg_xingshi'] eq 0 "}
+                    <option value="0" selected>仅普通帐号注册形式</option>
+                    <option value="1">仅手机号注册形式</option>
+                    <option value="2">手机号+普通帐号自由选择形式</option>
+                    {elseif condition="$config['web_reg_xingshi'] eq 1 "/}
+                    <option value="0">仅普通帐号注册形式</option>
+                    <option value="1" selected>仅手机号注册形式</option>
+                    <option value="2">手机号+普通帐号自由选择形式</option>
+                    {elseif condition="$config['web_reg_xingshi'] eq 2 "/}
+                    <option value="0">仅普通帐号注册形式</option>
+                    <option value="1">仅手机号注册形式</option>
+                    <option value="2" selected>手机号+普通帐号自由选择形式</option>
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">会员审核：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[web_reg_status]">
+                    <option value="0" {if condition="$config['web_reg_status'] eq 0 "}selected{/if}>自动审核</option>
+                    <option value="1" {if condition="$config['web_reg_status'] eq 1 "}selected{/if}>手动审核</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>自动审核：会员注册自动开通  手动审核：会员注册之后需要联系管理员开通</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">注册赠送积分：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_reg_point]" value="{$config.web_reg_point}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>注册赠送积分</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">注册赠送金额：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[web_reg_money]" value="{$config.web_reg_money}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>注册赠送金额 单位：元</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码输错多少次冻结：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[loginerrornum]" value="{$config.loginerrornum}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>密码输错多少次冻结</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">冻结时间：</label>
+            <div class="input-group col-sm-4">
+                <input type="text" class="form-control" name="config[frozentime]" value="{$config.frozentime}">
+                <div class="g-hint"><i class="fa fa-info-circle"></i>单位：分</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>

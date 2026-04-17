@@ -1,0 +1,143 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">模版配置</div>
+    <form id="formmoban" action="" method="post" class="form-horizontal">
+        <input type="hidden" id="moban_index" name="config[moban_index]" value="{$config.moban_index}">
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/jingdian.jpg" alt="经典模版" style="height: 200px;">
+                    <div class="caption" style="text-align: center;">
+                        <h3>经典模版</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 1"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban1" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/917.jpg" alt="仿917模版" style="height: 200px;">
+                    <div class="caption" style="text-align: center;">
+                        <h3>仿917模版</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 2"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban2" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/jdmb.png" alt="简单模版" style="height: 200px;">
+                    <div class="caption" style="text-align: center;">
+                        <h3>简单模版</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 3"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban3" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/pc4.jpg" alt="简易商城A" style="height: 200px;">
+                    <div class="caption">
+                        <h3>简易商城A</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 4"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban4" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/pc5.jpg" alt="简易商城B" style="height: 200px;">
+                    <div class="caption">
+                        <h3>简易商城B</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 5"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban5" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/pc6.jpg" alt="优云宝" style="height: 200px;">
+                    <div class="caption">
+                        <h3>优云宝</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 6"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban6" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="__IMG__/pc4.jpg" alt="现代模版" style="height: 200px;filter:hue-rotate(180deg);">
+                    <div class="caption">
+                        <h3>现代模版</h3>
+                        <p>
+                            {if condition="$config.moban_index eq 7"}
+                            <span class="label label-danger" style="font-size: 25px;">当前使用模版</span>
+                            {else/}
+                            <button id="moban7" name="qiyong" type="submit" class="btn btn-primary" role="button">点我启用</button>
+                            {/if}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+<script type="text/javascript">
+$(function(){
+    $('button[name=qiyong]').click(function(){
+        var index = $(this).attr("id");
+        if(index=='moban1'){ $('#moban_index').val("1"); }
+        else if(index=='moban2'){ $('#moban_index').val("2"); }
+        else if(index=='moban3'){ $('#moban_index').val("3"); }
+        else if(index=='moban4'){ $('#moban_index').val("4"); }
+        else if(index=='moban5'){ $('#moban_index').val("5"); }
+        else if(index=='moban6'){ $('#moban_index').val("6"); }
+        else if(index=='moban7'){ $('#moban_index').val("7"); }
+        $("#formmoban").attr("action", "{:url('save')}");
+        $("#formmoban").submit();
+        return false;
+    });
+});
+</script>
+</body>
+</html>

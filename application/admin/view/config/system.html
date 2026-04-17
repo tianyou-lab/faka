@@ -1,0 +1,45 @@
+{include file="public/header" /}
+{literal}<style>
+.g-page{padding:10px}
+.g-form-wrap{background:#fff;border-radius:6px;border:1px solid #e8e8e8;padding:20px}
+.g-form-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e8e8}
+.g-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.g-hint i{margin-right:3px}
+</style>
+{/literal}
+<body class="gray-bg">
+<div class="g-page">
+<div class="g-form-wrap">
+    <div class="g-form-title">系统配置</div>
+    <form action="{:url('save')}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">禁止后台访问IP：</label>
+            <div class="input-group col-sm-4">
+                <textarea class="form-control" type="text" rows="3" name="config[admin_allow_ip]">{$config.admin_allow_ip}</textarea>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>多个用#号分隔，如果不配置表示不限制IP访问</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">HTTPS：</label>
+            <div class="input-group col-sm-4">
+                <select class="form-control" name="config[is_https]">
+                    <option value="https" {if condition="$config['is_https'] eq 'https'"}selected{/if}>开启</option>
+                    <option value="http" {if condition="$config['is_https'] eq 'http'"}selected{/if}>关闭</option>
+                </select>
+                <div class="g-hint"><i class="fa fa-info-circle"></i>配置好HTTPS认证之后，一定要这里选择开启</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> 保存信息</button>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{include file="public/footer" /}
+</body>
+</html>
