@@ -189,27 +189,44 @@ class Category extends Base
             $fenzumsg   = '';
             $simierror  = 0;
             $simimsg    = '';
+
+            // 批量查询，避免循环内逐条查询
+            $ids = array_keys($data);
+            $allGoods = Db::name('fl')->where('id', 'in', $ids)->column('mprice,id', 'id');
+            $allGroupPrices = Db::name('member_group_price')
+                ->where('goodid', 'in', $ids)->order('price')->select();
+            $allMemberPrices = Db::name('member_price')
+                ->where('goodid', 'in', $ids)->order('price')->select();
+
+            // 按 goodid 索引最低价
+            $groupPriceMap  = [];
+            foreach ($allGroupPrices as $gp) {
+                if (!isset($groupPriceMap[$gp['goodid']])) {
+                    $groupPriceMap[$gp['goodid']] = $gp['price'];
+                }
+            }
+            $memberPriceMap = [];
+            foreach ($allMemberPrices as $mp) {
+                if (!isset($memberPriceMap[$mp['goodid']])) {
+                    $memberPriceMap[$mp['goodid']] = $mp['price'];
+                }
+            }
+
             foreach ($data as $v => $val) {
-                $onegoods = $a->getOneMember($v);
-                if ($onegoods['mprice'] <> $val['mprice']) {
+                $onegoods = isset($allGoods[$v]) ? $allGoods[$v] : null;
+                if ($onegoods && $onegoods['mprice'] <> $val['mprice']) {
                     $mprice = $val['mprice'] - $onegoods['mprice'];
                     Db::name('child_fl')->where('goodid', $v)->where('mprice<>-1')->inc('mprice', $mprice)->inc('marketprice', $mprice)->inc('mprice_bz', $mprice)->update();
                 }
-                $member_group_price = Db::name('member_group_price')->where(['goodid' => $v])->limit(1)->order('price')->select();
-                if ($member_group_price) {
-                    if ($member_group_price[0]['price'] > $val['mprice']) {
-                        $fenzumsg .= "商品ID:" . $v . "\r\n";
-                        $fenzuerror++;
-                        continue;
-                    }
+                if (isset($groupPriceMap[$v]) && $groupPriceMap[$v] > $val['mprice']) {
+                    $fenzumsg .= "商品ID:" . $v . "\r\n";
+                    $fenzuerror++;
+                    continue;
                 }
-                $member_price = Db::name('member_price')->where(['goodid' => $v])->limit(1)->order('price')->select();
-                if ($member_price) {
-                    if ($member_price[0]['price'] > $val['mprice']) {
-                        $simimsg .= "商品ID:" . $v . "\r\n";
-                        $simierror++;
-                        continue;
-                    }
+                if (isset($memberPriceMap[$v]) && $memberPriceMap[$v] > $val['mprice']) {
+                    $simimsg .= "商品ID:" . $v . "\r\n";
+                    $simierror++;
+                    continue;
                 }
                 $tempdata[] = $val;
             }
@@ -250,27 +267,35 @@ class Category extends Base
         $allpage = intval(ceil($count / $limits));
         $lists   = $member->getMemberByWhere($map, $Nowpage, $limits, $status, $type);
         if ($lists) {
-            $result  = Db::name('child_fl')->field('count(id) as count,goodid')->group('goodid')->select();
+            // 一次性获取所有分站商品数量（按goodid分组）
+            $fzResult  = Db::name('child_fl')->field('count(id) as count,goodid')->group('goodid')->select();
+            $fzCountMap = [];
+            foreach ($fzResult as $fzRow) {
+                $fzCountMap[$fzRow['goodid']] = $fzRow['count'];
+            }
             $countfz = Db::name('fz_auth')->count();
+
+            // 一次性获取当前页所有商品的卡密数量，避免循环内查询
+            $goodIds = array_column($lists->toArray(), 'id');
+            $kamiRows = Db::name('mail')
+                ->field('count(id) as cnt, mpid')
+                ->where('mpid', 'in', $goodIds)
+                ->where('mis_use', '0')
+                ->group('mpid')
+                ->select();
+            $kamiCountMap = [];
+            foreach ($kamiRows as $row) {
+                $kamiCountMap[$row['mpid']] = $row['cnt'];
+            }
+
             foreach ($lists as $k => $v) {
                 $goodid = $v['id'];
-                $lists[$k]['kamicount']       = Db::name('mail')->where(['mpid' => $v['id'], 'mis_use' => '0'])->count();
-                $lists[$k]['fznotgoodscount'] = $countfz;
-                foreach ($result as $k2 => $v2) {
-                    if ($v2['goodid'] == $goodid) {
-                        $lists[$k]['fznotgoodscount'] = $countfz - $v2['count'];
-                    }
-                }
+                $lists[$k]['kamicount']       = isset($kamiCountMap[$goodid]) ? $kamiCountMap[$goodid] : 0;
+                $fzUsed = isset($fzCountMap[$goodid]) ? $fzCountMap[$goodid] : 0;
+                $lists[$k]['fznotgoodscount'] = $countfz - $fzUsed;
             }
         }
-        $dataCount['all']          = $member->getAllCount([], 999, 999);
-        $dataCount['allsale']      = $member->getAllCount([], 0, 999);
-        $dataCount['allzidong']    = $member->getAllCount([], 999, 0);
-        $dataCount['zidongsell']   = $member->getAllCount([], 1, 0);
-        $dataCount['zidongsale']   = $member->getAllCount([], 0, 0);
-        $dataCount['allshoudong']  = $member->getAllCount([], 999, 1);
-        $dataCount['shoudongsell'] = $member->getAllCount([], 1, 1);
-        $dataCount['shoudongsale'] = $member->getAllCount([], 0, 1);
+        $dataCount = $member->getCountStats([]);
         if ($mlm === null) {
             $mlm = 999;
         }

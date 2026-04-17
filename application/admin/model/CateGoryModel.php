@@ -75,6 +75,36 @@ class CateGoryModel extends Model
 
 
     /**
+     * 一次查询获取商品管理页所需的所有分类统计数量
+     * 替代原来 8 次独立 COUNT 查询
+     */
+    public function getCountStats($map = [])
+    {
+        $base = $this->where($map);
+        // 用 CASE WHEN 在一条 SQL 里统计所有维度
+        $row = Db::name('fl')->where($map)->field("
+            COUNT(*) as all_count,
+            SUM(CASE WHEN status=0 THEN 1 ELSE 0 END) as allsale,
+            SUM(CASE WHEN type=0 THEN 1 ELSE 0 END) as allzidong,
+            SUM(CASE WHEN status=1 AND type=0 THEN 1 ELSE 0 END) as zidongsell,
+            SUM(CASE WHEN status=0 AND type=0 THEN 1 ELSE 0 END) as zidongsale,
+            SUM(CASE WHEN type=1 THEN 1 ELSE 0 END) as allshoudong,
+            SUM(CASE WHEN status=1 AND type=1 THEN 1 ELSE 0 END) as shoudongsell,
+            SUM(CASE WHEN status=0 AND type=1 THEN 1 ELSE 0 END) as shoudongsale
+        ")->find();
+        return [
+            'all'          => (int)$row['all_count'],
+            'allsale'      => (int)$row['allsale'],
+            'allzidong'    => (int)$row['allzidong'],
+            'zidongsell'   => (int)$row['zidongsell'],
+            'zidongsale'   => (int)$row['zidongsale'],
+            'allshoudong'  => (int)$row['allshoudong'],
+            'shoudongsell' => (int)$row['shoudongsell'],
+            'shoudongsale' => (int)$row['shoudongsale'],
+        ];
+    }
+
+    /**
      * 插入信息
      */
     public function insertMember($param)
