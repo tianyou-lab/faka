@@ -74,6 +74,25 @@ function normalize_install_sql($sql)
     return preg_replace($pattern, '$1$3', $sql);
 }
 
+// Execute install SQL in single statements to avoid environments
+// where CLIENT_MULTI_STATEMENTS is disabled.
+function execute_install_sql(PDO $pdo, $sql)
+{
+    $sql = preg_replace('/^\xEF\xBB\xBF/', '', (string)$sql);
+    $sql = preg_replace('/^\s*(?:--|#).*(?:\r\n|\r|\n)?/m', '', $sql);
+    $parts = preg_split('/;\s*(?:\r\n|\r|\n)/', $sql . "\n");
+
+    foreach ($parts as $statement)
+    {
+        $statement = trim($statement);
+        if ($statement === '')
+        {
+            continue;
+        }
+        $pdo->exec($statement);
+    }
+}
+
 function detect_request_host()
 {
     $host = '';
@@ -227,7 +246,7 @@ if (!$errInfo && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']
         $pdo->query("USE `{$mysqlDatabase}`");
 
 
-        $pdo->exec($sql);
+        execute_install_sql($pdo, $sql);
 
                         $conphp = "<?php\n";
         $conphp .= "error_reporting(0);\n";
